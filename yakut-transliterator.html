@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yakut (Sakha) Transliterator - Кириллица → Латиница</title>
+    <style>
+        :root {
+            /* Dark theme (default) */
+            --bg-container: rgba(20, 20, 20, 0.95);
+            --bg-textarea: rgba(10, 10, 10, 0.8);
+            --bg-output: rgba(15, 15, 15, 0.9);
+            --bg-char-btn: rgba(40, 40, 40, 0.8);
+            --bg-char-btn-hover: rgba(60, 60, 60, 0.9);
+            --bg-select: rgba(30, 30, 30, 0.9);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-label: #d0d0d0;
+            --text-char-label: #c0c0c0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-textarea: rgba(255, 255, 255, 0.1);
+            --border-output: rgba(100, 200, 100, 0.2);
+            --border-char-btn: rgba(255, 255, 255, 0.15);
+            --border-select: rgba(255, 255, 255, 0.15);
+            --shadow-container: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-char-btn: 0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            /* Light theme */
+            --bg-container: rgba(255, 255, 255, 0.95);
+            --bg-textarea: rgba(250, 250, 250, 0.9);
+            --bg-output: rgba(245, 255, 245, 0.9);
+            --bg-char-btn: rgba(240, 240, 240, 0.9);
+            --bg-char-btn-hover: rgba(220, 220, 220, 0.95);
+            --bg-select: rgba(245, 245, 245, 0.9);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-label: #333333;
+            --text-char-label: #555555;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --border-textarea: rgba(0, 0, 0, 0.15);
+            --border-output: rgba(50, 150, 50, 0.3);
+            --border-char-btn: rgba(0, 0, 0, 0.2);
+            --border-select: rgba(0, 0, 0, 0.2);
+            --shadow-container: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --shadow-char-btn: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            transition: background 0.3s ease;
+        }
+
+        html[data-theme="dark"] {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        html[data-theme="light"] {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: transparent;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-container);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-container);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-char-btn);
+            border: 1px solid var(--border-char-btn);
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-char-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-char-btn);
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo-text {
+            font-size: 2.2em;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            min-width: 120px;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .input-section {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-label);
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px 50px 20px 20px;
+            background: var(--bg-textarea);
+            border: 2px solid var(--border-textarea);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(100, 150, 255, 0.5);
+            box-shadow: 0 0 20px rgba(100, 150, 255, 0.2);
+        }
+
+        .clear-btn, .copy-btn {
+            position: absolute;
+            top: 10%;
+            transform: translateY(-50%);
+            right: 5px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .clear-btn:hover, .copy-btn:hover {
+            opacity: 1;
+            background: var(--bg-char-btn);
+            color: var(--text-primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .copy-btn img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* Dark theme: invert black icon to white */
+        html[data-theme="dark"] .copy-btn img {
+            filter: invert(1) brightness(1.2);
+            opacity: 0.7;
+        }
+
+        /* Light theme: keep icon dark */
+        html[data-theme="light"] .copy-btn img {
+            filter: brightness(0.6);
+            opacity: 0.6;
+        }
+
+        .copy-btn:hover img {
+            opacity: 1;
+        }
+
+        html[data-theme="dark"] .copy-btn:hover img {
+            filter: invert(1) brightness(1.5);
+        }
+
+        html[data-theme="light"] .copy-btn:hover img {
+            filter: brightness(0.4);
+        }
+
+        .output-section {
+            position: relative;
+        }
+
+        .copy-btn {
+            right: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .translate-btn {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .translate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(74, 144, 226, 0.5);
+            background: linear-gradient(135deg, #5aa0f2 0%, #458acd 100%);
+        }
+
+        .translate-btn:active {
+            transform: translateY(0);
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-textarea {
+            background: var(--bg-output);
+            border: 2px solid var(--border-output);
+            padding: 20px 50px 20px 20px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .output-textarea:focus {
+            border-color: rgba(100, 200, 100, 0.4);
+            box-shadow: 0 0 20px rgba(100, 200, 100, 0.15);
+        }
+
+        .special-chars-section {
+            margin-top: 15px;
+            margin-bottom: 25px;
+            padding: 15px 0;
+        }
+
+        .special-chars-label {
+            margin-bottom: 10px;
+            color: var(--text-char-label);
+            font-size: 0.85em;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .special-chars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: 6px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .char-btn {
+            background: var(--bg-char-btn);
+            color: var(--text-primary);
+            border: 1px solid var(--border-char-btn);
+            padding: 6px 4px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .char-btn:hover {
+            background: var(--bg-char-btn-hover);
+            border-color: var(--border-char-btn);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-char-btn);
+        }
+
+        .char-btn:active {
+            transform: translateY(0);
+        }
+
+        .char-cyrillic {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .char-latin {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .arrow {
+            color: var(--text-secondary);
+            font-size: 8px;
+        }
+
+        /* New styles for the dropdown */
+        .alphabet-select-section {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .alphabet-select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            background-color: var(--bg-select);
+            border: 2px solid var(--border-select);
+            border-radius: 12px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%), linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+            background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+        }
+
+        .alphabet-select:focus {
+            outline: none;
+            border-color: rgba(100, 150, 255, 0.5);
+            box-shadow: 0 0 20px rgba(100, 150, 255, 0.2);
+        }
+
+        .alphabet-select option {
+            background: var(--bg-container);
+            color: var(--text-primary);
+            padding: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-container);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-container);
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            .logo-header {
+                gap: 15px;
+                margin-bottom: 20px;
+                padding: 15px 0;
+            }
+
+            .logo-text {
+                font-size: 1.5em;
+                min-width: 80px;
+                letter-spacing: 2px;
+            }
+
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+
+            .special-chars-grid {
+                grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+                gap: 5px;
+            }
+
+            .char-btn {
+                padding: 5px 3px;
+                font-size: 11px;
+            }
+
+            .char-cyrillic {
+                font-size: 12px;
+            }
+
+            .char-latin {
+                font-size: 9px;
+            }
+
+            .clear-btn, .copy-btn {
+                width: 25px;
+                height: 25px;
+                font-size: 16px;
+            }
+
+            .copy-btn img {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-text">Light</span>
+    </button>
+
+    <div class="container">
+        <div class="logo-header">
+            <div class="logo-text">Sakha</div>
+            <div class="logo-container">
+                <img src="haryskhal.png" alt="Logo" class="logo-image" />
+            </div>
+            <div class="logo-text">Latin</div>
+        </div>
+        <p class="subtitle">Кириллица → Латын алпаабыта</p>
+
+        <div class="input-section">
+            <label for="input-text">Введите текст на якутском (кириллица):</label>
+            <div class="textarea-wrapper">
+                <textarea id="input-text" placeholder="Например: Киэн туттун, эн саха буоларгынан!"></textarea>
+                <button class="clear-btn" id="clear-btn" aria-label="Clear input" title="Clear">×</button>
+            </div>
+        </div>
+
+        <div class="special-chars-section">
+            <p class="special-chars-label">Специальные символы (нажмите, чтобы вставить):</p>
+            <div class="special-chars-grid" id="special-chars-grid">
+                </div>
+        </div>
+
+        <div class="alphabet-select-section">
+            <label for="alphabet-select" style="margin-bottom: 12px; font-weight: 500;">Выберите стандарт транслитерации:</label>
+            <select id="alphabet-select" class="alphabet-select">
+                <option value="novgorodov">Латиница Семёна Новгородов</option>
+                <option value="latin1929">Латиница (1929–1939)</option>
+                <option value="botlingk">Алфавит Бётлингка</option>
+                <option value="khitrov">Алфавит Хитрова</option>
+            </select>
+        </div>
+        <div class="button-container">
+            <button class="translate-btn" id="translate-btn">Перевести</button>
+        </div>
+
+        <div class="output-section">
+            <label for="output-text">Результат (латиница):</label>
+            <div class="textarea-wrapper">
+                <textarea id="output-text" class="output-textarea" readonly placeholder="Результат появится здесь..."></textarea>
+                <button class="copy-btn" id="copy-btn" aria-label="Copy output" title="Copy">
+                    <img src="copy.png" alt="Copy" />
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // --- MASTER ALPHABET SYSTEMS ---
+
+        const alphabetSystems = {
+            'novgorodov': {
+                applyLongVowels: true, // Special rule for this system
+                map: {
+                    'А': 'a', 'а': 'a',
+                    'Б': 'b', 'б': 'b',
+                    'В': '—', 'в': '—', 
+                    'Г': 'g', 'г': 'g',
+                    'Ҕ': 'ʃ', 'ҕ': 'ʃ',
+                    'Д': 'd', 'д': 'd',
+                    'И': 'i', 'и': 'i',
+                    'Й': 'j', 'й': 'j',
+                    'Ҋ': 'ɟ', 'ҋ': 'ɟ',
+                    'К': 'k', 'к': 'k',
+                    'Л': 'l', 'л': 'l',
+                    'М': 'm', 'м': 'm',
+                    'Н': 'n', 'н': 'n',
+                    'Ҥ': 'ŋ', 'ҥ': 'ŋ',
+                    'О': 'ɔ', 'о': 'ɔ',
+                    'Ө': 'ꭢ', 'ө': 'ꭢ',
+                    'П': 'p', 'п': 'p',
+                    'Р': 'r', 'р': 'r',
+                    'С': 's', 'с': 's',
+                    'Һ': 'h', 'һ': 'h',
+                    'Т': 't', 'т': 't',
+                    'У': 'u', 'у': 'u',
+                    'Ү': 'y', 'ү': 'y',
+                    'Х': 'q', 'х': 'q',
+                    'Ч': 'c', 'ч': 'c',
+                    'Ы': 'ɯ', 'ы': 'ɯ',
+                    'Э': 'e', 'э': 'e',
+                },
+                combinations: [
+                    { cyrillic: 'ыа', latin: 'ꭠ' },
+                    { cyrillic: 'иэ', latin: 'ꭡ' },
+                    { cyrillic: 'уо', latin: 'ꭣ' },
+                    { cyrillic: 'үө', latin: 'w' },
+                    { cyrillic: 'Дь', latin: 'з' },
+                    { cyrillic: 'дь', latin: 'з' },
+                    { cyrillic: 'Ль', latin: 'ʎ' },
+                    { cyrillic: 'ль', latin: 'ʎ' },
+                    { cyrillic: 'Нь', latin: 'ɲ' },
+                    { cyrillic: 'нь', latin: 'ɲ' },
+                ]
+            },
+            'latin1929': {
+                applyLongVowels: false,
+                map: {
+                    'А': 'A', 'а': 'a',
+                    'Б': 'B', 'б': 'b',
+                    'В': '—', 'в': '—',
+                    'Г': 'G', 'г': 'g',
+                    'Ҕ': 'Ƣ', 'ҕ': 'ƣ',
+                    'Д': 'D', 'д': 'd',
+                    'Е': '—', 'е': '—',
+                    'Ё': '—', 'ё': '—',
+                    'Ж': '—', 'ж': '—',
+                    'З': '—', 'з': '—',
+                    'И': 'I', 'и': 'i',
+                    'Й': 'J', 'й': 'j',
+                    'Ҋ': '—', 'ҋ': '—',
+                    'К': 'K', 'к': 'k',
+                    'Л': 'L', 'л': 'l',
+                    'М': 'M', 'м': 'm',
+                    'Н': 'N', 'н': 'n',
+                    'Ҥ': 'Ꞑ', 'ҥ': 'ꞑ',
+                    'О': 'O', 'о': 'o',
+                    'Ө': 'Ɵ', 'ө': 'ɵ',
+                    'П': 'P', 'п': 'p',
+                    'Р': 'R', 'р': 'r',
+                    'С': 'S', 'с': 's',
+                    'Һ': 'H', 'һ': 'h',
+                    'Т': 'T', 'т': 't',
+                    'У': 'U', 'у': 'u',
+                    'Ү': 'Y', 'ү': 'y',
+                    'Ф': '—', 'ф': '—',
+                    'Х': 'Q', 'х': 'q',
+                    'Ц': '—', 'ц': '—',
+                    'Ч': 'C', 'ч': 'c',
+                    'Ш': '—', 'ш': '—',
+                    'Щ': '—', 'щ': '—',
+                    'Ъ': '—', 'ъ': '—',
+                    'Ы': 'Ь', 'ы': 'ь',
+                    'Ь': '—', 'ь': '—',
+                    'Э': 'E', 'э': 'e',
+                    'Ю': '—', 'ю': '—',
+                    'Я': '—', 'я': '—',
+                },
+                combinations: [
+                    { cyrillic: 'Дь', latin: 'Ç' },
+                    { cyrillic: 'дь', latin: 'ç' },
+                    { cyrillic: 'Ль', latin: 'Lj' },
+                    { cyrillic: 'ль', latin: 'lj' },
+                    { cyrillic: 'Нь', latin: 'Nj' },
+                    { cyrillic: 'нь', latin: 'nj' },
+                ]
+            },
+            'botlingk': {
+                applyLongVowels: false,
+                map: {
+                    'А': 'А', 'а': 'а',
+                    'Б': 'Б', 'б': 'б',
+                    'В': '—', 'в': '—',
+                    'Г': 'Г', 'г': 'г',
+                    'Ҕ': 'Ҕ', 'ҕ': 'ҕ',
+                    'Д': 'Д', 'д': 'д',
+                    'Е': '—', 'е': '—',
+                    'Ё': '—', 'ё': '—',
+                    'Ж': '—', 'ж': '—',
+                    'З': '—', 'з': '—',
+                    'И': 'І', 'и': 'і',
+                    'Й': 'Ј', 'й': 'ј',
+                    'Ҋ': 'Ɉ', 'ҋ': 'ɉ',
+                    'К': 'K', 'к': 'к',
+                    'Л': 'Л', 'л': 'л',
+                    'М': 'М', 'м': 'м',
+                    'Н': 'Н', 'н': 'н',
+                    'Ҥ': 'Ҥ', 'ҥ': 'ҥ',
+                    'О': 'О', 'о': 'о',
+                    'Ө': 'Ӧ', 'ө': 'ӧ',
+                    'П': 'П', 'п': 'п',
+                    'Р': 'Р', 'р': 'р',
+                    'С': 'С', 'с': 'с',
+                    'Һ': 'һ', 'һ': 'һ',
+                    'Т': 'T', 'т': 'т',
+                    'У': 'У', 'у': 'у',
+                    'Ү': 'Ӱ', 'ү': 'ӱ',
+                    'Ф': '—', 'ф': '—',
+                    'Х': 'Х', 'х': 'х',
+                    'Ц': '—', 'ц': '—',
+                    'Ч': 'Ч', 'ч': 'ч',
+                    'Ш': '—', 'ш': '—',
+                    'Щ': '—', 'щ': '—',
+                    'Ъ': '—', 'ъ': '—',
+                    'Ы': 'Ы', 'ы': 'ы',
+                    'Ь': '—', 'ь': '—',
+                    'Э': 'Ӓ', 'э': 'ӓ',
+                    'Ю': '—', 'ю': '—',
+                    'Я': '—', 'я': '—',
+                },
+                combinations: [
+                    { cyrillic: 'Дь', latin: 'Џ' },
+                    { cyrillic: 'дь', latin: 'џ' },
+                    { cyrillic: 'Ль', latin: 'L' }, // Per list
+                    { cyrillic: 'ль', latin: 'l' }, // Per list
+                    { cyrillic: 'Нь', latin: "Н’" },
+                    { cyrillic: 'нь', latin: "н'" },
+                ]
+            },
+            'khitrov': {
+                applyLongVowels: false,
+                map: {
+                    'А': 'А', 'а': 'а',
+                    'Б': 'Б', 'б': 'б',
+                    'В': '—', 'в': '—',
+                    'Г': 'Г', 'г': 'г',
+                    'Ҕ': '—', 'ҕ': '—',
+                    'Д': 'Д', 'д': 'д',
+                    'Е': 'Е', 'е': 'е',
+                    'Ё': '—', 'ё': '—',
+                    'Ж': '—', 'ж': '—',
+                    'З': '—', 'з': '—',
+                    'И': 'И', 'и': 'и', // Simplified from 'и / і'
+                    'Й': 'Й', 'й': 'й',
+                    'Ҋ': '—', 'ҋ': '—',
+                    'К': 'К', 'к': 'к',
+                    'Л': 'Л', 'л': 'л',
+                    'М': 'И', 'м': 'м',
+                    'Н': 'Н', 'н': 'н',
+                    'Ҥ': 'Ҥ', 'ҥ': 'ҥ',
+                    'О': 'О', 'о': 'о',
+                    'Ө': 'Ё', 'ө': 'ё',
+                    'П': 'П', 'п': 'п',
+                    'Р': 'Р', 'р': 'р',
+                    'С': 'С', 'с': 'с',
+                    'Һ': '—', 'һ': '—',
+                    'Т': 'Т', 'т': 'т',
+                    'У': 'У', 'у': 'у',
+                    'Ү': '—', 'ү': '—',
+                    'Ф': '—', 'ф': '—',
+                    'Х': 'Х', 'х': 'х',
+                    'Ц': '—', 'ц': '—',
+                    'Ч': 'Ч', 'ч': 'ч',
+                    'Ш': '—', 'ш': '—',
+                    'Щ': '—', 'щ': '—',
+                    'Ъ': 'ъ', 'ъ': 'ъ',
+                    'Ы': 'Ы', 'ы': 'ы',
+                    'Ь': '—', 'ь': '—',
+                    'Э': 'Э', 'э': 'э',
+                    'Ю': 'Ю', 'ю': 'ю',
+                    'Я': 'Я', 'я': 'я',
+                },
+                combinations: [
+                    { cyrillic: 'Дь', latin: 'Ԫ' },
+                    { cyrillic: 'дь', latin: 'ԫ' },
+                    { cyrillic: 'Нь', latin: 'Нь' },
+                    { cyrillic: 'нь', latin: 'нь' },
+                    { cyrillic: 'Ль', latin: '—' }, // Per list
+                    { cyrillic: 'ль', latin: '—' }, // Per list
+                ]
+            }
+        };
+
+        const longVowelMap = {
+            'aa': 'a:',
+            'ii': 'i:',
+            'uu': 'u:',
+            'ɯɯ': 'ɯ:',
+            'ɔɔ': 'ɔ:',
+            'ee': 'e:',
+            'yy': 'y:',
+            'ꭢꭢ': 'ꭢ:'
+        };
+
+        function transliterate(text, systemKey) {
+            if (!text) return '';
+
+            const rules = alphabetSystems[systemKey];
+            if (!rules) {
+                console.error('Invalid transliteration system key:', systemKey);
+                return text; 
+            }
+            
+            const transliterationMap = rules.map;
+            const specialCombinations = rules.combinations;
+            
+            let result = text;
+
+            const sortedCombinations = [...specialCombinations].sort((a, b) => b.cyrillic.length - a.cyrillic.length);
+            
+            for (const combo of sortedCombinations) {
+                const escaped = combo.cyrillic.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(escaped, 'g');
+                result = result.replace(regex, combo.latin);
+            }
+
+            let transliterated = '';
+            for (let i = 0; i < result.length; i++) {
+                const char = result[i];
+                
+                if (transliterationMap[char] !== undefined) {
+                    transliterated += transliterationMap[char];
+                } else {
+                    transliterated += char;
+                }
+            }
+
+            if (rules.applyLongVowels) {
+                for (const [pattern, replacement] of Object.entries(longVowelMap)) {
+                    const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(escaped, 'g');
+                    transliterated = transliterated.replace(regex, replacement);
+                }
+            }
+
+            return transliterated;
+        }
+
+        function insertAtCursor(textarea, text) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            textarea.value = value.substring(0, start) + text + value.substring(end);
+            const newCursorPos = start + text.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+        }
+        const specialCharacters = [
+            { cyrillic: 'Ҕ', latin: 'ʃ', label: 'Ҕ → ʃ' },
+            { cyrillic: 'ҕ', latin: 'ʃ', label: 'ҕ → ʃ' },
+            { cyrillic: 'Һ', latin: 'h', label: 'Һ → h' },
+            { cyrillic: 'һ', latin: 'h', label: 'һ → h' },
+            { cyrillic: 'Ҥ', latin: 'ŋ', label: 'Ҥ → ŋ' },
+            { cyrillic: 'ҥ', latin: 'ŋ', label: 'ҥ → ŋ' },
+            { cyrillic: 'Ө', latin: 'ꭢ', label: 'Ө → ꭢ' },
+            { cyrillic: 'ө', latin: 'ꭢ', label: 'ө → ꭢ' },
+            { cyrillic: 'Ү', latin: 'y', label: 'Ү → y' },
+            { cyrillic: 'ү', latin: 'y', label: 'ү → y' },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputTextarea = document.getElementById('input-text');
+            const outputTextarea = document.getElementById('output-text');
+            const translateBtn = document.getElementById('translate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const toast = document.getElementById('toast');
+            const specialCharsGrid = document.getElementById('special-chars-grid');
+            const alphabetSelect = document.getElementById('alphabet-select'); // New element
+
+            function initTheme() {
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                updateThemeUI(currentTheme);
+            }
+
+            function updateThemeUI(theme) {
+                if (theme === 'light') {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                } else {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                }
+            }
+
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeUI(newTheme);
+            });
+            initTheme();
+
+            // --- Toast ---
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            // --- Buttons ---
+            clearBtn.addEventListener('click', function() {
+                inputTextarea.value = '';
+                outputTextarea.value = '';
+                inputTextarea.focus();
+            });
+
+            copyBtn.addEventListener('click', function() {
+                const text = outputTextarea.value;
+                if (text) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('Copied to clipboard!');
+                    }).catch(() => {
+                        outputTextarea.select();
+                        document.execCommand('copy');
+                        showToast('Copied to clipboard!');
+                    });
+                } else {
+                    showToast('Nothing to copy');
+                }
+            });
+
+            // --- Special Chars ---
+            specialCharacters.forEach(char => {
+                const button = document.createElement('button');
+                button.className = 'char-btn';
+                button.innerHTML = `
+                    <span class="char-cyrillic">${char.cyrillic}</span>
+                    <span class="arrow">→</span>
+                    <span class="char-latin">${char.latin}</span>
+                `;
+                button.addEventListener('click', function() {
+                    insertAtCursor(inputTextarea, char.cyrillic);
+                });
+                specialCharsGrid.appendChild(button);
+            });
+
+            function performTransliteration() {
+                const inputText = inputTextarea.value;
+                const selectedSystem = alphabetSelect.value; // Get selected system
+                const transliteratedText = transliterate(inputText, selectedSystem);
+                outputTextarea.value = transliteratedText;
+            }
+
+            translateBtn.addEventListener('click', performTransliteration);
+
+            inputTextarea.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    performTransliteration();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
