@@ -6,7 +6,6 @@
     <title>SakhaLatin — Кириллица → Латиница</title>
     <style>
         :root {
-            /* Dark theme (default) */
             --bg-container: rgba(20, 20, 20, 0.95);
             --bg-textarea: rgba(10, 10, 10, 0.8);
             --bg-output: rgba(15, 15, 15, 0.9);
@@ -27,7 +26,6 @@
         }
 
         [data-theme="light"] {
-            /* Light theme */
             --bg-container: rgba(255, 255, 255, 0.95);
             --bg-textarea: rgba(250, 250, 250, 0.9);
             --bg-output: rgba(245, 255, 245, 0.9);
@@ -374,7 +372,6 @@
             font-size: 8px;
         }
 
-        /* New styles for the dropdown */
         .alphabet-select-section {
             margin-bottom: 25px;
             text-align: center;
@@ -550,11 +547,10 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // --- MASTER ALPHABET SYSTEMS ---
 
         const alphabetSystems = {
             'novgorodov': {
-                applyLongVowels: true, // Special rule for this system
+                applyLongVowels: true,
                 map: {
                     'А': 'a', 'а': 'a',
                     'Б': 'b', 'б': 'b',
@@ -695,8 +691,8 @@
                 combinations: [
                     { cyrillic: 'Дь', latin: 'Џ' },
                     { cyrillic: 'дь', latin: 'џ' },
-                    { cyrillic: 'Ль', latin: 'L' }, // Per list
-                    { cyrillic: 'ль', latin: 'l' }, // Per list
+                    { cyrillic: 'Ль', latin: 'L' }, 
+                    { cyrillic: 'ль', latin: 'l' }, 
                     { cyrillic: 'Нь', latin: "Н’" },
                     { cyrillic: 'нь', latin: "н'" },
                 ]
@@ -714,7 +710,7 @@
                     'Ё': '—', 'ё': '—',
                     'Ж': '—', 'ж': '—',
                     'З': '—', 'з': '—',
-                    'И': 'И', 'и': 'и', // Simplified from 'и / і'
+                    'И': 'И', 'и': 'и', 
                     'Й': 'Й', 'й': 'й',
                     'Ҋ': '—', 'ҋ': '—',
                     'К': 'К', 'к': 'к',
@@ -749,8 +745,8 @@
                     { cyrillic: 'дь', latin: 'ԫ' },
                     { cyrillic: 'Нь', latin: 'Нь' },
                     { cyrillic: 'нь', latin: 'нь' },
-                    { cyrillic: 'Ль', latin: '—' }, // Per list
-                    { cyrillic: 'ль', latin: '—' }, // Per list
+                    { cyrillic: 'Ль', latin: '—' },
+                    { cyrillic: 'ль', latin: '—' },
                 ]
             }
         };
@@ -870,7 +866,6 @@
             });
             initTheme();
 
-            // --- Toast ---
             function showToast(message) {
                 toast.textContent = message;
                 toast.classList.add('show');
@@ -879,7 +874,6 @@
                 }, 2000);
             }
 
-            // --- Buttons ---
             clearBtn.addEventListener('click', function() {
                 inputTextarea.value = '';
                 outputTextarea.value = '';
@@ -901,7 +895,6 @@
                 }
             });
 
-            // --- Special Chars ---
             specialCharacters.forEach(char => {
                 const button = document.createElement('button');
                 button.className = 'char-btn';
@@ -933,7 +926,6 @@
             });
         });
     </script>
-        <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4NEH7TP8F"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
