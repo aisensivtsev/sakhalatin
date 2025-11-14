@@ -159,7 +159,7 @@
             text-align: center;
             margin-bottom: 30px;
             color: var(--text-secondary);
-            font-size: 0.9em;
+            font-size: 0em;
             transition: color 0.3s ease;
         }
 
@@ -576,7 +576,37 @@
             <div class="logo-text">Latin</div>
         </div>
         <h1 class="subtitle">Якутская Кириллица → Якутская Латиница</h1>
+        <div style="margin-bottom: 25px; line-height: 1.55; color: var(--text-secondary); font-size: 0.95em;">
+        <h2 style="font-size: 1.15em; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">
+            Конвертер якутского языка с кириллицы на латиницу
+        </h2>
 
+        <p>
+            Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке 
+            с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст, 
+            который вводите вручную или же вставить скопированный текст.
+        </p>
+
+        <p style="margin-top: 10px;">
+            Преобразование основано на исторических системах латинизации якутского языка — 
+            алфавите С.А. Новгородова (1920-е), латинице 1929–1939 годов, а также современных 
+            научных принципах транслитерации.
+        </p>
+
+        <p style="margin-top: 10px;">
+            Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> — 
+            не могут быть отображены в точном соответствии с нормами, поскольку эти символы 
+            не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные 
+            формы, максимально близкие к оригинальным:
+        </p>
+
+        <ul style="margin-top: 10px; padding-left: 20px;">
+            <li>ыа → <b>ıь</b></li>
+            <li>иэ → <b>ıe</b></li>
+            <li>уо → <b>uo</b></li>
+            <li>ө → <b>ɔe</b></li>
+        </ul>
+    </div>
         <div class="input-section">
             <h2 for="input-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);">Введите текст на якутском (кириллица):</h2>
             <div class="textarea-wrapper">
@@ -644,7 +674,7 @@
                     'Н': 'n', 'н': 'n',
                     'Ҥ': 'ŋ', 'ҥ': 'ŋ',
                     'О': 'ɔ', 'о': 'ɔ',
-                    'Ө': 'œ', 'ө': 'œ',
+                    'Ө': 'ɔe', 'ө': 'ɔe',
                     'П': 'p', 'п': 'p',
                     'Р': 'r', 'р': 'r',
                     'С': 's', 'с': 's',
@@ -658,9 +688,13 @@
                     'Э': 'e', 'э': 'e',
                 },
                 combinations: [
-                    { cyrillic: 'ыа', latin: 'ꭠ' },
-                    { cyrillic: 'иэ', latin: 'ie' },
+                    { cyrillic: 'Ыа', latin: 'ıь' },
+                    { cyrillic: 'ыа', latin: 'ıь' },
+                    { cyrillic: 'Иэ', latin: 'ıe' },
+                    { cyrillic: 'иэ', latin: 'ıe' },
+                    { cyrillic: 'Уо', latin: 'uo' },
                     { cyrillic: 'уо', latin: 'uo' },
+                    { cyrillic: 'Үө', latin: 'w' },
                     { cyrillic: 'үө', latin: 'w' },
                     { cyrillic: 'Дь', latin: 'з' },
                     { cyrillic: 'дь', latin: 'з' },
