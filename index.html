@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SakhaLatin — инструмент для транслитерации саха (якутской) кириллицы в латиницу, основанный на историческом алфавите Новгородова.">
+    <meta name="description" content="SakhaLatin — инструмент для транслитерации саха (якутской) кириллицы в латиницу, основанный на историческом алфавите Новгородова." data-i18n="meta_description">
     <title>SakhaLatin — Кириллица → Латиница</title>
     <link rel="icon" type="image/png" href="haryskhal.png">
     <style>
         :root {
-            /* Dark theme (default) */
             --bg-container: rgba(20, 20, 20, 0.95);
             --bg-textarea: rgba(10, 10, 10, 0.8);
             --bg-output: rgba(15, 15, 15, 0.9);
@@ -61,18 +60,15 @@
         }
 
     html[data-theme="dark"] {
-        /* Use linear-gradient for visual appeal as before */
         background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         }
 
     html[data-theme="light"] {
-        /* Use linear-gradient for visual appeal as before */
         background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
         }
        
         body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        /* CHANGE: Use the new variable. The HTML gradient will show through, but this sets a fallback/base */
         background: var(--body-bg-color); 
         color: var(--text-primary);
         min-height: 100vh;
@@ -95,6 +91,45 @@
             border: 1px solid var(--border-color);
             transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 5px;
+            background: var(--bg-char-btn);
+            border: 1px solid var(--border-char-btn);
+            border-radius: 50px;
+            padding: 5px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-char-btn-hover);
+        }
+
+        .lang-btn.active {
+            background: var(--bg-container);
+            color: var(--text-primary);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
 
         .theme-toggle {
             position: absolute;
@@ -127,6 +162,7 @@
             gap: 30px;
             margin-bottom: 30px;
             padding: 20px 0;
+            margin-top: 40px;
         }
 
         .logo-text {
@@ -159,7 +195,16 @@
             text-align: center;
             margin-bottom: 30px;
             color: var(--text-secondary);
-            font-size: 0em;
+            font-size: 0em; 
+            transition: color 0.3s ease;
+        }
+
+        .main-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            font-weight: 400;
             transition: color 0.3s ease;
         }
 
@@ -237,13 +282,11 @@
             pointer-events: none;
         }
 
-        /* Dark theme: invert black icon to white */
         html[data-theme="dark"] .copy-btn img {
             filter: invert(1) brightness(1.2);
             opacity: 0.7;
         }
 
-        /* Light theme: keep icon dark */
         html[data-theme="light"] .copy-btn img {
             filter: brightness(0.6);
             opacity: 0.6;
@@ -380,7 +423,6 @@
             font-size: 8px;
         }
 
-        /* New styles for the dropdown */
         .alphabet-select-section {
             margin-bottom: 25px;
             text-align: center;
@@ -439,7 +481,6 @@
             transform: translateY(0);
         }
 
-        /* --- NEW FOOTER STYLES --- */
         .footer-links {
             text-align: center;
             margin-top: 30px;
@@ -467,13 +508,11 @@
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Dark theme: invert black icon to white */
         html[data-theme="dark"] .footer-links img {
             filter: invert(1) brightness(1.2);
             opacity: 0.7;
         }
 
-        /* Light theme: keep icon dark */
         html[data-theme="light"] .footer-links img {
             filter: brightness(0.6);
             opacity: 0.6;
@@ -490,13 +529,26 @@
         html[data-theme="light"] .footer-links a:hover img {
             filter: brightness(0.4);
         }
-        /* --- END OF NEW STYLES --- */
+        
 
 
         @media (max-width: 768px) {
             .container {
                 padding: 25px;
             }
+
+            
+            .lang-switcher {
+                top: 10px;
+                left: 10px;
+                padding: 4px;
+                gap: 4px;
+            }
+            .lang-btn {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            
 
             .theme-toggle {
                 top: 10px;
@@ -509,6 +561,7 @@
                 gap: 15px;
                 margin-bottom: 20px;
                 padding: 15px 0;
+                margin-top: 45px;
             }
 
             .logo-text {
@@ -562,6 +615,12 @@
   gtag('config', 'G-G4NEH7TP8F');
 </script>
 <body>
+    <div class="lang-switcher">
+        <button class="lang-btn" data-lang="ru">Русский</button>
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="sah">Саха</button>
+    </div>
+
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
         <span id="theme-icon">☀️</span>
         <span id="theme-text">Light</span>
@@ -575,25 +634,26 @@
             </div>
             <div class="logo-text">Latin</div>
         </div>
-        <h1 class="subtitle">Якутская Кириллица → Якутская Латиница</h1>
+        <h1 class="main-subtitle" data-i18n="subtitle">Якутская Кириллица → Якутская Латиница</h1>
+        
         <div style="margin-bottom: 25px; line-height: 1.55; color: var(--text-secondary); font-size: 0.95em;">
-        <h2 style="font-size: 1.15em; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">
+        <h2 data-i18n="intro_title" style="font-size: 1.15em; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">
             Конвертер якутского языка с кириллицы на латиницу
         </h2>
 
-        <p>
+        <p data-i18n="intro_text">
             Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке 
             с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст, 
             который вводите вручную или же вставить скопированный текст.
         </p>
 
-        <p style="margin-top: 10px;">
+        <p style="margin-top: 10px;" data-i18n="intro_p2">
             Преобразование основано на исторических системах латинизации якутского языка — 
-            алфавите С.А. Новгородова (1920-е), латинице 1929–1939 годов, а также современных 
+            алфавите С.А. Новгородова (1920-е), Яналиф 1929–1939 годов и Венгерице а также современных 
             научных принципах транслитерации.
         </p>
 
-        <p style="margin-top: 10px;">
+        <p style="margin-top: 10px;" data-i18n="intro_p3">
             Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> — 
             не могут быть отображены в точном соответствии с нормами, поскольку эти символы 
             не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные 
@@ -608,37 +668,36 @@
         </ul>
     </div>
         <div class="input-section">
-            <h2 for="input-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);">Введите текст на якутском (кириллица):</h2>
+            <h2 for="input-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);" data-i18n="input_label">Введите текст на якутском (кириллица):</h2>
             <div class="textarea-wrapper">
-                <textarea id="input-text" placeholder="Например: Киэн тутун, эн саха буоларгынан!"></textarea>
-                <button class="clear-btn" id="clear-btn" aria-label="Clear input" title="Clear">×</button>
+                <textarea id="input-text" placeholder="Например: Киэн тутун, эн саха буоларгынан!" data-i18n="input_placeholder"></textarea>
+                <button class="clear-btn" id="clear-btn" aria-label="Clear input" title="Clear" data-i18n="clear_title">×</button>
             </div>
         </div>
 
         <div class="special-chars-section">
-            <p class="special-chars-label">Специальные символы (нажмите, чтобы вставить):</p>
+            <p class="special-chars-label" data-i18n="special_chars_label">Специальные символы (нажмите, чтобы вставить):</p>
             <div class="special-chars-grid" id="special-chars-grid">
                 </div>
         </div>
 
         <div class="alphabet-select-section">
-            <h2 for="alphabet-select" style="margin-bottom: 12px; font-weight: 500; font-size: 0.95em; color: var(--text-label);">Выберите стандарт транслитерации:</h2>
+            <h2 for="alphabet-select" style="margin-bottom: 12px; font-weight: 500; font-size: 0.95em; color: var(--text-label);" data-i18n="select_label">Выберите стандарт транслитерации:</h2>
             <select id="alphabet-select" class="alphabet-select">
-                <option value="novgorodov">Латиница Семёна Новгородова</option>
-                <option value="latin1929">Латиница (1929–1939)</option>
-                <option value="botlingk">Алфавит Бётлингка</option>
-                <option value="khitrov">Алфавит Хитрова</option>
+                <option value="novgorodov" data-i18n="option_novgorodov">Латиница Семёна Новгородова</option>
+                <option value="vengeritsa" data-i18n="option_vengeritsa">Венгерица</option>
+                <option value="yanalif" data-i18n="option_yanalif">Яналиф</option>
             </select>
         </div>
         <div class="button-container">
-            <button class="translate-btn" id="translate-btn">Перевести</button>
+            <button class="translate-btn" id="translate-btn" data-i18n="translate_btn">Перевести</button>
         </div>
 
         <div class="output-section">
-            <h2 for="output-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);">Результат (латиница):</h2>
+            <h2 for="output-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);" data-i18n="output_label">Результат (латиница):</h2>
             <div class="textarea-wrapper">
-                <textarea id="output-text" class="output-textarea" readonly placeholder="Результат появится здесь..."></textarea>
-                <button class="copy-btn" id="copy-btn" aria-label="Copy output" title="Copy">
+                <textarea id="output-text" class="output-textarea" readonly placeholder="Результат появится здесь..." data-i18n="output_placeholder"></textarea>
+                <button class="copy-btn" id="copy-btn" aria-label="Copy output" title="Copy" data-i18n="copy_title">
                     <img src="copy.png" alt="Copy" />
                 </button>
             </div>
@@ -646,7 +705,7 @@
 
 
         <div class="footer-links">
-            <a href="https://www.instagram.com/sakhalatin" target="_blank" rel="noopener noreferrer" title="Contact me on Instagram">
+            <a href="https://www.instagram.com/sakhalatin" target="_blank" rel="noopener noreferrer" title="Contact me on Instagram" data-i18n="contact_title">
                 <img src="instagram.png" alt="Instagram" />
             </a>
         </div>
@@ -655,9 +714,167 @@
     <div class="toast" id="toast"></div>
 
     <script>
+
+        const translations = {
+            'ru': {
+                'meta_description': 'SakhaLatin — инструмент для транслитерации саха (якутской) кириллицы в латиницу, основанный на историческом алфавите Новгородова.',
+                'title': 'SakhaLatin — Кириллица → Латиница',
+                'subtitle': 'Якутская Кириллица → Якутская Латиница',
+                'intro_title': 'Конвертер якутского языка с кириллицы на латиницу',
+                'intro_text': 'Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст, который вводите вручную или же вставить скопированный текст.',
+                'intro_p2': 'Преобразование основано на исторических системах латинизации якутского языка — алфавите С.А. Новгородова (1920-е), системе Яналиф (латиница 1929–1939 годов), а также на современном стандарте "Венгерица".',
+                'intro_p3': 'Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> — не могут быть отображены в точном соответствии с нормами, поскольку эти символы не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные формы, максимально близкие к оригинальным:',
+                'input_label': 'Введите текст на якутском (кириллица):',
+                'input_placeholder': 'Например: Киэн тутун, эн саха буоларгынан!',
+                'clear_title': 'Очистить',
+                'special_chars_label': 'Специальные символы (нажмите, чтобы вставить):',
+                'select_label': 'Выберите стандарт транслитерации:',
+                'option_novgorodov': 'Латиница Семёна Новгорода',
+                'option_vengeritsa': 'Венгерица',
+                'option_yanalif': 'Яналиф',
+                'option_khitrov': 'Алфавит Хитрова',
+                'translate_btn': 'Перевести',
+                'output_label': 'Результат (латиница):',
+                'output_placeholder': 'Результат появится здесь...',
+                'copy_title': 'Копировать',
+                'contact_title': 'Свяжитесь со мной в Instagram',
+                'footer_copyright': '© 2025 SakhaLatin. Все права защищены.',
+                'toast_copied': 'Скопировано в буфер обмена!',
+                'toast_nothing': 'Нечего копировать'
+            },
+            'en': {
+                'meta_description': 'SakhaLatin — A tool to transliterate Sakha (Yakut) Cyrillic to Latin, based on the historical Novgorodov alphabet.',
+                'title': 'SakhaLatin — Cyrillic → Latin',
+                'subtitle': 'Yakut Cyrillic → Yakut Latin',
+                'intro_title': 'Yakut Language Cyrillic to Latin Converter',
+                'intro_text': 'This online converter allows you to automatically transliterate texts in the Yakut language from the Cyrillic alphabet to Latin script. You can convert text that you type manually or paste copied text.',
+'intro_p2': 'The conversion is based on historical systems of Yakut latinization — the alphabet of S.A. Novgorodov (1920s), the Yanálif system (Latin 1929–1939), and the modern "Vengeritsa" standard.',
+                'intro_p3': 'Some diphthongs — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, as well as the letter <b>ө</b> — cannot be displayed in exact accordance with the standards, as these symbols are not supported on iOS and Android. Therefore, the converter uses adapted forms that are as close as possible to the originals:',
+                'input_label': 'Enter text in Yakut (Cyrillic):',
+                'input_placeholder': 'Example: Киэн тутун, эн саха буоларгынан!',
+                'clear_title': 'Clear',
+                'special_chars_label': 'Special Characters (click to insert):',
+                'select_label': 'Choose transliteration standard:',
+                'option_novgorodov': 'Semyon Novgorodov\'s Latin',
+                'option_vengeritsa': 'Vengeritsa',
+                'option_yanalif': 'Yanalif',
+                'option_khitrov': 'Khitrov\'s Alphabet',
+                'translate_btn': 'Translate',
+                'output_label': 'Result (Latin):',
+                'output_placeholder': 'The result will appear here...',
+                'copy_title': 'Copy',
+                'contact_title': 'Contact me on Instagram',
+                'footer_copyright': '© 2025 SakhaLatin. All rights reserved.',
+                'toast_copied': 'Copied to clipboard!',
+                'toast_nothing': 'Nothing to copy'
+            },
+            'sah': {
+                'meta_description': 'SakhaLatin — Саха (якут) кириллицатын латыын алпабыытыгар көһөрөр тэрил, С.А. Новгородов историябыт алпабыытыгар олоҕуран.',
+                'title': 'SakhaLatin — Кириллица → Латыын',
+                'subtitle': 'Саха Кириллицата → Саха Латыына',
+                'intro_title': 'Саха тылын кириллицаттан латыын алпабыытыгар көһөрөөччү',
+                'intro_text': 'Бу онлайн-көһөрөөччү сахалыы тиэкистэри кириллицаттан латыын суругар-бичигэр тута көһөрөргө аналлаах. Бэйэҕит бэчээттиир эбэтэр атын сиртэн киллэрбит тиэкискитин көһөрүөххүтүн сөп.',
+'intro_p2': 'Көһөрүү саха тылын латыыннааһын историябыт тиһиктэригэр олоҕурар — С.А. Новгородов алпабыыта (1920-с сс.), Яналиф тиһигэ (1929–1939 сс. латыын алпабыыта), уонна билиҥҥи "Венгерица" стандарыгар.',
+                'intro_p3': 'Сорох дифтоҥнар — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, уонна <b>ө</b> буукуба — iOS уонна Android-ка өйөммөт буоланнарын, табатык көстүбэттэр. Ол иһин манна кинилэргэ чугас, сөптөөх солбуктар туттуллаллар:',
+                'input_label': 'Сахалыы тиэкиһи киллэр (кириллица):',
+                'input_placeholder': 'Холобур: Киэн тутун, эн саха буоларгынан!',
+                'clear_title': 'Ыраастаа',
+                'special_chars_label': 'Анал бэлиэлэр (баттаан киллэр):',
+                'select_label': 'Транслитерация стандартын тал:',
+                'option_novgorodov': 'Сэмэн Новгородов Латыына',
+                'option_vengeritsa': 'Венгерица',
+                'option_yanalif': 'Яналиф',
+                'option_khitrov': 'Хитров Алпабыыта',
+                'translate_btn': 'Көһөр',
+                'output_label': 'Түмүк (латыын):',
+                'output_placeholder': 'Түмүк манна тахсыа...',
+                'copy_title': 'Куопуйалаа',
+                'contact_title': 'Instagram-ҥа сибээстэс',
+                'footer_copyright': '© 2025 SakhaLatin. Барыта көмүскэллээх.',
+                'toast_copied': 'Буферга куопуйданда!',
+                'toast_nothing': 'Куопуйдуур туох да суох'
+            }
+        };
+
+        let currentLang = 'ru'; 
+
+        function setLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('Language not found:', lang);
+                return;
+            }
+            
+            currentLang = lang; 
+            const langStrings = translations[lang];
+
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (langStrings[key]) {
+                    if (element.hasAttribute('placeholder')) {
+                        element.setAttribute('placeholder', langStrings[key]);
+                    } else if (element.hasAttribute('title')) {
+                        element.setAttribute('title', langStrings[key]);
+                    } else if (element.tagName === 'META' && element.hasAttribute('name')) {
+                         element.setAttribute('content', langStrings[key]);
+                    } else {
+                        element.innerHTML = langStrings[key]; 
+                    }
+                }
+            });
+            
+            document.title = langStrings['title'];
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            localStorage.setItem('language', lang);
+        }
+        
+
+
         const alphabetSystems = {
+            'yanalif': {
+                applyLongVowels: false,
+                map: {
+'А': 'A', 'а': 'a', 'Б': 'B', 'б': 'b',
+                    'В': 'V', 'в': 'v', 'Г': 'G', 'г': 'g',
+                    'Д': 'D', 'д': 'd', 'И': 'I', 'и': 'i',
+                    'Й': 'J', 'й': 'j', 'К': 'K', 'к': 'k',
+                    'Л': 'L', 'л': 'l', 'М': 'M', 'м': 'm',
+                    'Н': 'N', 'н': 'n', 'О': 'O', 'о': 'o',
+                    'П': 'P', 'п': 'p', 'Р': 'R', 'р': 'r',
+                    'С': 'S', 'с': 's', 'Т': 'T', 'т': 't',
+                    'У': 'U', 'у': 'u', 'Х': 'Q', 'х': 'q',
+                    'Ч': 'C', 'ч': 'c', 
+                    // ВОЗВРАТ К ОРИГИНАЛЬНОМУ ПРАВИЛУ: Ы -> Ь
+                    'Ы': 'Ь', 'ы': 'ь', 
+                    'Э': 'E', 'э': 'e',
+                    'Ҕ': 'Ƣ', 'ҕ': 'ƣ', 'Ҥ': 'Ꞑ', 'ҥ': 'ꞑ',
+                    'Һ': 'H', 'һ': 'h', 'Ө': 'Ө', 'ө': 'ɵ', 
+                    'Ү': 'Y', 'ү': 'y', 
+                },
+                combinations: [
+                    { cyrillic: 'Аа', latin: 'Aa' }, { cyrillic: 'аа', latin: 'aa' },
+                    { cyrillic: 'Оо', latin: 'Oo' }, { cyrillic: 'оо', latin: 'oo' },
+                    // ВОЗВРАТ К ОРИГИНАЛЬНОМУ ПРАВИЛУ: Ыы -> Ьь
+                    { cyrillic: 'Ыы', latin: 'Ьь' }, { cyrillic: 'ыы', latin: 'ьь' }, 
+                    { cyrillic: 'Уу', latin: 'Uu' }, { cyrillic: 'уу', latin: 'uu' },
+                    { cyrillic: 'Ии', latin: 'Ii' }, { cyrillic: 'ии', latin: 'ii' },
+                    { cyrillic: 'Өө', latin: 'Өө' }, { cyrillic: 'өө', latin: 'ɵɵ' }, 
+                    { cyrillic: 'Үү', latin: 'Yy' }, { cyrillic: 'үү', latin: 'yy' },
+                    { cyrillic: 'Ээ', latin: 'Ee' }, { cyrillic: 'ээ', latin: 'ee' },
+                    { cyrillic: 'Ҥҥ', latin: 'Ꞑꞑ' }, { cyrillic: 'ҥҥ', latin: 'ꞑꞑ' },
+                    { cyrillic: 'Дь', latin: 'Ç' }, { cyrillic: 'дь', latin: 'ç' },
+                    { cyrillic: 'Нь', latin: 'Nj' }, { cyrillic: 'нь', latin: 'nj' },
+                ]
+            },
             'novgorodov': {
-                applyLongVowels: true, // Special rule for this system
+                applyLongVowels: true,
                 map: {
                     'А': 'a', 'а': 'a',
                     'Б': 'b', 'б': 'b',
@@ -704,162 +921,75 @@
                     { cyrillic: 'нь', latin: 'ɲ' },
                 ]
             },
-            'latin1929': {
+            'vengeritsa': {
                 applyLongVowels: false,
                 map: {
                     'А': 'A', 'а': 'a',
                     'Б': 'B', 'б': 'b',
-                    'В': '—', 'в': '—',
-                    'Г': 'G', 'г': 'g',
-                    'Ҕ': 'Ƣ', 'ҕ': 'ƣ',
+                    'В': 'V', 'в': 'v',
+                    'Г': 'g', 'г': 'g',
+                    'Ҕ': 'Gh', 'ҕ': 'gh',
                     'Д': 'D', 'д': 'd',
-                    'Е': '—', 'е': '—',
-                    'Ё': '—', 'ё': '—',
-                    'Ж': '—', 'ж': '—',
-                    'З': '—', 'з': '—',
+                    'Е': '—', 'е': '—',     // Handled by combinations
+                    'Ё': '—', 'ё': '—',     // Handled by combinations
+                    'Ж': 'Jh', 'ж': 'jh',
+                    'З': 'Z', 'з': 'z',
                     'И': 'I', 'и': 'i',
-                    'Й': 'J', 'й': 'j',
+                    'Й': 'Ÿ', 'й': 'ÿ',
                     'Ҋ': '—', 'ҋ': '—',
                     'К': 'K', 'к': 'k',
                     'Л': 'L', 'л': 'l',
                     'М': 'M', 'м': 'm',
                     'Н': 'N', 'н': 'n',
-                    'Ҥ': 'Ꞑ', 'ҥ': 'ꞑ',
+                    'Ҥ': 'Ng', 'ҥ': 'ng',
                     'О': 'O', 'о': 'o',
-                    'Ө': 'Ɵ', 'ө': 'ɵ',
+                    'Ө': 'Ö', 'ө': 'ö',
                     'П': 'P', 'п': 'p',
                     'Р': 'R', 'р': 'r',
                     'С': 'S', 'с': 's',
                     'Һ': 'H', 'һ': 'h',
                     'Т': 'T', 'т': 't',
                     'У': 'U', 'у': 'u',
-                    'Ү': 'Y', 'ү': 'y',
-                    'Ф': '—', 'ф': '—',
+                    'Ү': 'Ü', 'ү': 'ü',
+                    'Ф': 'F', 'ф': 'f',
                     'Х': 'Q', 'х': 'q',
-                    'Ц': '—', 'ц': '—',
+                    'Ц': 'Tz', 'ц': 'tz',
                     'Ч': 'C', 'ч': 'c',
-                    'Ш': '—', 'ш': '—',
-                    'Щ': '—', 'щ': '—',
+                    'Ш': 'Sh', 'ш': 'sh',
+                    'Щ': 'Sc', 'щ': 'sc',
                     'Ъ': '—', 'ъ': '—',
-                    'Ы': 'Ь', 'ы': 'ь',
+                    'Ы': 'y', 'ы': 'y',
                     'Ь': '—', 'ь': '—',
                     'Э': 'E', 'э': 'e',
-                    'Ю': '—', 'ю': '—',
-                    'Я': '—', 'я': '—',
+                    'Ю': '—', 'ю': '—',     
+                    'Я': '—', 'я': '—',     
                 },
                 combinations: [
-                    { cyrillic: 'Дь', latin: 'Ç' },
-                    { cyrillic: 'дь', latin: 'ç' },
-                    { cyrillic: 'Ль', latin: 'Lj' },
-                    { cyrillic: 'ль', latin: 'lj' },
-                    { cyrillic: 'Нь', latin: 'Nj' },
-                    { cyrillic: 'нь', latin: 'nj' },
+
+                    { cyrillic: 'Аа', latin: 'Á' }, { cyrillic: 'аа', latin: 'á' },
+                    { cyrillic: 'Оо', latin: 'Ó' }, { cyrillic: 'оо', latin: 'ó' },
+                    { cyrillic: 'Ыы', latin: 'Ý' }, { cyrillic: 'ыы', latin: 'ý' },
+                    { cyrillic: 'Уу', latin: 'Ú' }, { cyrillic: 'уу', latin: 'ú' },
+                    { cyrillic: 'Ии', latin: 'Í' }, { cyrillic: 'ии', latin: 'í' },
+                    { cyrillic: 'Өө', latin: 'Ő' }, { cyrillic: 'өө', latin: 'ő' },
+                    { cyrillic: 'Үү', latin: 'Ű' }, { cyrillic: 'үү', latin: 'ű' },
+                    { cyrillic: 'Ээ', latin: 'É' }, { cyrillic: 'ээ', latin: 'é' }, 
+
+                    { cyrillic: 'Ыа', latin: 'Ë' }, { cyrillic: 'ыа', latin: 'ë' },
+                    { cyrillic: 'Иэ', latin: 'Ê' }, { cyrillic: 'иэ', latin: 'ê' },
+                    { cyrillic: 'Уо', latin: 'Ô' }, { cyrillic: 'уо', latin: 'ô' },
+                    { cyrillic: 'Үө', latin: 'Œ' }, { cyrillic: 'үө', latin: 'œ' },
+ 
+                    { cyrillic: 'Ҥҥ', latin: 'Nng' }, { cyrillic: 'ҥҥ', latin: 'nng' },
+                    { cyrillic: 'Дь', latin: 'J' }, { cyrillic: 'дь', latin: 'j' },
+                    { cyrillic: 'Нь', latin: 'Nh' }, { cyrillic: 'нь', latin: 'nh' },
+
+                    { cyrillic: 'Е', latin: 'Ÿe' }, { cyrillic: 'е', latin: 'ÿe' },
+                    { cyrillic: 'Я', latin: 'Ÿa' }, { cyrillic: 'я', latin: 'ÿa' },
+                    { cyrillic: 'Ё', latin: 'Ÿo' }, { cyrillic: 'ё', latin: 'ÿo' },
+                    { cyrillic: 'Ю', latin: 'Ÿu' }, { cyrillic: 'ю', latin: 'ÿu' }
                 ]
             },
-            'botlingk': {
-                applyLongVowels: false,
-                map: {
-                    'А': 'А', 'а': 'а',
-                    'Б': 'Б', 'б': 'б',
-                    'В': '—', 'в': '—',
-                    'Г': 'Г', 'г': 'г',
-                    'Ҕ': 'Ҕ', 'ҕ': 'ҕ',
-                    'Д': 'Д', 'д': 'д',
-                    'Е': '—', 'е': '—',
-                    'Ё': '—', 'ё': '—',
-                    'Ж': '—', 'ж': '—',
-                    'З': '—', 'з': '—',
-                    'И': 'І', 'и': 'і',
-                    'Й': 'Ј', 'й': 'ј',
-                    'Ҋ': 'Ɉ', 'ҋ': 'ɉ',
-                    'К': 'K', 'к': 'к',
-                    'Л': 'Л', 'л': 'л',
-                    'М': 'М', 'м': 'м',
-                    'Н': 'Н', 'н': 'н',
-                    'Ҥ': 'Ҥ', 'ҥ': 'ҥ',
-                    'О': 'О', 'о': 'о',
-                    'Ө': 'Ӧ', 'ө': 'ӧ',
-                    'П': 'П', 'п': 'п',
-                    'Р': 'Р', 'р': 'р',
-                    'С': 'С', 'с': 'с',
-                    'Һ': 'һ', 'һ': 'һ',
-                    'Т': 'T', 'т': 'т',
-                    'У': 'У', 'у': 'у',
-                    'Ү': 'Ӱ', 'ү': 'ӱ',
-                    'Ф': '—', 'ф': '—',
-                    'Х': 'Х', 'х': 'х',
-                    'Ц': '—', 'ц': '—',
-                    'Ч': 'Ч', 'ч': 'ч',
-                    'Ш': '—', 'ш': '—',
-                    'Щ': '—', 'щ': '—',
-                    'Ъ': '—', 'ъ': '—',
-                    'Ы': 'Ы', 'ы': 'ы',
-                    'Ь': '—', 'ь': '—',
-                    'Э': 'Ӓ', 'э': 'ӓ',
-                    'Ю': '—', 'ю': '—',
-                    'Я': '—', 'я': '—',
-                },
-                combinations: [
-                    { cyrillic: 'Дь', latin: 'Џ' },
-                    { cyrillic: 'дь', latin: 'џ' },
-                    { cyrillic: 'Ль', latin: 'L' }, // Per list
-                    { cyrillic: 'ль', latin: 'l' }, // Per list
-                    { cyrillic: 'Нь', latin: "Н’" },
-                    { cyrillic: 'нь', latin: "н'" },
-                ]
-            },
-            'khitrov': {
-                applyLongVVowels: false,
-                map: {
-                    'А': 'А', 'а': 'а',
-                    'Б': 'Б', 'б': 'б',
-                    'В': '—', 'в': '—',
-                    'Г': 'Г', 'г': 'г',
-                    'Ҕ': '—', 'ҕ': '—',
-                    'Д': 'Д', 'д': 'д',
-                    'Е': 'Е', 'е': 'е',
-                    'Ё': '—', 'ё': '—',
-                    'Ж': '—', 'ж': '—',
-                    'З': '—', 'з': '—',
-                    'И': 'И', 'и': 'и', // Simplified from 'и / і'
-                    'Й': 'Й', 'й': 'й',
-                    'Ҋ': '—', 'ҋ': '—',
-                    'К': 'К', 'к': 'к',
-                    'Л': 'Л', 'л': 'л',
-                    'М': 'И', 'м': 'м',
-                    'Н': 'Н', 'н': 'н',
-                    'Ҥ': 'Ҥ', 'ҥ': 'ҥ',
-                    'О': 'О', 'о': 'о',
-                    'Ө': 'Ё', 'ө': 'ё',
-                    'П': 'П', 'п': 'п',
-                    'Р': 'Р', 'р': 'р',
-                    'С': 'С', 'с': 'с',
-                    'Һ': '—', 'һ': '—',
-                    'Т': 'Т', 'т': 'т',
-                    'У': 'У', 'у': 'у',
-                    'Ү': '—', 'ү': '—',
-                    'Ф': '—', 'ф': '—',
-                    'Х': 'Х', 'х': 'х',
-                    'Ц': '—', 'ц': '—',
-                    'Ч': 'Ч', 'ч': 'ч',
-                    'Ш': '—', 'ш': '—',
-                    'Щ': '—', 'щ': '—',
-                    'Ъ': 'ъ', 'ъ': 'ъ',
-                    'Ы': 'Ы', 'ы': 'ы',
-                    'Ь': '—', 'ь': '—',
-                    'Э': 'Э', 'э': 'э',
-                    'Ю': 'Ю', 'ю': 'ю',
-                    'Я': 'Я', 'я': 'я',
-                },
-                combinations: [
-                    { cyrillic: 'Дь', latin: 'Ԫ' },
-                    { cyrillic: 'дь', latin: 'ԫ' },
-                    { cyrillic: 'Нь', latin: 'Нь' },
-                    { cyrillic: 'нь', latin: 'нь' },
-                    { cyrillic: 'Ль', latin: '—' }, // Per list
-                    { cyrillic: 'ль', latin: '—' }, // Per list
-                ]
-            }
         };
 
         const longVowelMap = {
@@ -939,6 +1069,7 @@
             { cyrillic: 'ү', latin: 'y', label: 'ү → y' },
         ];
 
+
         document.addEventListener('DOMContentLoaded', function() {
             const inputTextarea = document.getElementById('input-text');
             const outputTextarea = document.getElementById('output-text');
@@ -950,12 +1081,16 @@
             const themeText = document.getElementById('theme-text');
             const toast = document.getElementById('toast');
             const specialCharsGrid = document.getElementById('special-chars-grid');
-            const alphabetSelect = document.getElementById('alphabet-select'); // New element
+            const alphabetSelect = document.getElementById('alphabet-select');
+            const langButtons = document.querySelectorAll('.lang-btn'); 
 
-            function initTheme() {
+            function initApp() {
                 const currentTheme = localStorage.getItem('theme') || 'dark';
                 document.documentElement.setAttribute('data-theme', currentTheme);
                 updateThemeUI(currentTheme);
+                
+                const savedLang = localStorage.getItem('language') || 'ru'; 
+                setLanguage(savedLang);
             }
 
             function updateThemeUI(theme) {
@@ -975,10 +1110,9 @@
                 localStorage.setItem('theme', newTheme);
                 updateThemeUI(newTheme);
             });
-            initTheme();
 
-            // --- Toast ---
-            function showToast(message) {
+            function showToast(messageKey) {
+                const message = translations[currentLang][messageKey] || messageKey;
                 toast.textContent = message;
                 toast.classList.add('show');
                 setTimeout(() => {
@@ -986,7 +1120,6 @@
                 }, 2000);
             }
 
-            // --- Buttons ---
             clearBtn.addEventListener('click', function() {
                 inputTextarea.value = '';
                 outputTextarea.value = '';
@@ -997,23 +1130,22 @@
                 const text = outputTextarea.value;
                 if (text) {
                     navigator.clipboard.writeText(text).then(() => {
-                        showToast('Copied to clipboard!');
-                    }).catch(() => {
+                        showToast('toast_copied'); 
+                    }).catch(() => { 
                         outputTextarea.select();
                         document.execCommand('copy');
-                        showToast('Copied to clipboard!');
+                        showToast('toast_copied'); 
                     });
                 } else {
-                    showToast('Nothing to copy');
+                    showToast('toast_nothing');
                 }
             });
 
-            // --- Special Chars ---
             specialCharacters.forEach(char => {
                 const button = document.createElement('button');
                 button.className = 'char-btn';
                 button.innerHTML = `
-                    <span class="char-cyrillic">${char.cyrillic}</span>
+                    <span class.char-cyrillic">${char.cyrillic}</span>
                     <span class="arrow">→</span>
                     <span class="char-latin">${char.latin}</span>
                 `;
@@ -1025,7 +1157,7 @@
 
             function performTransliteration() {
                 const inputText = inputTextarea.value;
-                const selectedSystem = alphabetSelect.value; // Get selected system
+                const selectedSystem = alphabetSelect.value; 
                 const transliteratedText = transliterate(inputText, selectedSystem);
                 outputTextarea.value = transliteratedText;
             }
@@ -1038,11 +1170,19 @@
                     performTransliteration();
                 }
             });
+
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const lang = button.getAttribute('data-lang');
+                    setLanguage(lang);
+                });
+            });
+
+            initApp();
         });
     </script>
-    </script>
     <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #777; font-size: 14px;">
-        <p>© 2025 SakhaLatin. All rights reserved.</p>
+        <p data-i18n="footer_copyright">© 2025 SakhaLatin. All rights reserved.</p>
     </footer>
 </body>
 </html>
