@@ -161,5 +161,5 @@ open index.html
 
 ## 📄 License / Лицензия
 
-All Rights Reserved © 2025 SakhaLatin.  
+All Rights Reserved © 2026 SakhaLatin.  
 Несанкционированное копирование или распространение без письменного разрешения запрещено.
