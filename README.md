@@ -5,7 +5,7 @@
 
 ---
 
-## 🇬🇧 English
+## English
 
 An online converter that transliterates **Yakut (Sakha)** language texts from the Cyrillic alphabet into Latin script — based on three historical writing systems.
 
@@ -81,7 +81,7 @@ Feel free to open an **Issue** to report a bug or suggest improvements, or submi
 
 ---
 
-## 🇷🇺 Русский
+## Русский
 
 Онлайн-конвертер для автоматической транслитерации текстов на **якутском (саха)** языке с кириллицы на латиницу — на основе трёх исторических систем письма.
 
