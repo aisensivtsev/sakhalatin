@@ -7,754 +7,19 @@
     <title>SakhaLatin — Кириллица → Латиница</title>
     <link rel="icon" type="image/png" href="haryskhal.png">
     <link rel="shortcut icon" type="image/png" href="haryskhal.png">
-    <style>
-        :root {
-            --bg-container: rgba(20, 20, 20, 0.95);
-            --bg-textarea: rgba(10, 10, 10, 0.8);
-            --bg-output: rgba(15, 15, 15, 0.9);
-            --bg-char-btn: rgba(40, 40, 40, 0.8);
-            --bg-char-btn-hover: rgba(60, 60, 60, 0.9);
-            --bg-select: rgba(30, 30, 30, 0.9);
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --text-label: #d0d0d0;
-            --text-char-label: #c0c0c0;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-textarea: rgba(255, 255, 255, 0.1);
-            --border-output: rgba(100, 200, 100, 0.2);
-            --border-char-btn: rgba(255, 255, 255, 0.15);
-            --border-select: rgba(255, 255, 255, 0.15);
-            --shadow-container: 0 20px 60px rgba(0, 0, 0, 0.5);
-            --shadow-char-btn: 0 4px 12px rgba(255, 255, 255, 0.1);
-        }
-
-        [data-theme="light"] {
-            /* Light theme */
-            --bg-container: rgba(255, 255, 255, 0.95);
-            --bg-textarea: rgba(250, 250, 250, 0.9);
-            --bg-output: rgba(245, 255, 245, 0.9);
-            --bg-char-btn: rgba(240, 240, 240, 0.9);
-            --bg-char-btn-hover: rgba(220, 220, 220, 0.95);
-            --bg-select: rgba(245, 245, 245, 0.9);
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --text-label: #333333;
-            --text-char-label: #555555;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --border-textarea: rgba(0, 0, 0, 0.15);
-            --border-output: rgba(50, 150, 50, 0.3);
-            --border-char-btn: rgba(0, 0, 0, 0.2);
-            --border-select: rgba(0, 0, 0, 0.2);
-            --shadow-container: 0 20px 60px rgba(0, 0, 0, 0.15);
-            --shadow-char-btn: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --body-bg-color: #ffffff
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-        transition: background 0.3s ease;
-        }
-
-    html[data-theme="dark"] {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-        }
-
-    html[data-theme="light"] {
-        background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-        }
-       
-        body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: var(--body-bg-color); 
-        color: var(--text-primary);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        transition: color 0.3s ease, background 0.3s ease; /* Add background to transition */
-        position: relative;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--bg-container);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--shadow-container);
-            border: 1px solid var(--border-color);
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .lang-switcher {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            gap: 5px;
-            background: var(--bg-char-btn);
-            border: 1px solid var(--border-char-btn);
-            border-radius: 50px;
-            padding: 5px;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 5px 12px;
-            cursor: pointer;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn:hover {
-            color: var(--text-primary);
-            background: var(--bg-char-btn-hover);
-        }
-
-        .lang-btn.active {
-            background: var(--bg-container);
-            color: var(--text-primary);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            font-weight: 600;
-        }
-
-
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-char-btn);
-            border: 1px solid var(--border-char-btn);
-            border-radius: 50px;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .theme-toggle:hover {
-            background: var(--bg-char-btn-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-char-btn);
-        }
-
-        .logo-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            margin-top: 40px;
-        }
-
-        .logo-text {
-            font-size: 2.2em;
-            font-weight: 300;
-            letter-spacing: 3px;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            min-width: 120px;
-            text-align: center;
-            transition: color 0.3s ease;
-        }
-
-        .logo-container {
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .logo-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .subtitle {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--text-secondary);
-            font-size: 0em; 
-            transition: color 0.3s ease;
-        }
-
-        .main-subtitle {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--text-secondary);
-            font-size: 1.1em;
-            font-weight: 400;
-            transition: color 0.3s ease;
-        }
-
-        .input-section {
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .textarea-wrapper {
-            position: relative;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--text-label);
-            font-size: 0.95em;
-            font-weight: 500;
-            transition: color 0.3s ease
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 20px 50px 20px 20px;
-            background: var(--bg-textarea);
-            border: 2px solid var(--border-textarea);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 16px;
-            font-family: inherit;
-            resize: vertical;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: rgba(100, 150, 255, 0.5);
-            box-shadow: 0 0 20px rgba(100, 150, 255, 0.2);
-        }
-
-        .clear-btn, .copy-btn {
-            position: absolute;
-            top: 15px;
-            right: 5px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 25px;
-            color: var(--text-secondary);
-            padding: 5px;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            opacity: 0.6;
-            transform: none;
-        }
-
-        .clear-btn:hover, .copy-btn:hover {
-            opacity: 1;
-            background: var(--bg-char-btn);
-            color: var(--text-primary);
-            transform: scale(1.1);
-        }
-
-        .copy-btn img {
-            width: 18px;
-            height: 18px;
-            object-fit: contain;
-            transition: opacity 0.3s ease, filter 0.3s ease;
-            pointer-events: none;
-        }
-
-        html[data-theme="dark"] .copy-btn img {
-            filter: invert(1) brightness(1.2);
-            opacity: 0.7;
-        }
-
-        html[data-theme="light"] .copy-btn img {
-            filter: brightness(0.6);
-            opacity: 0.6;
-        }
-
-        .copy-btn:hover img {
-            opacity: 1;
-        }
-
-        html[data-theme="dark"] .copy-btn:hover img {
-            filter: invert(1) brightness(1.5);
-        }
-
-        html[data-theme="light"] .copy-btn:hover img {
-            filter: brightness(0.4);
-        }
-
-        .output-section {
-            position: relative;
-        }
-
-        .copy-btn {
-            right: 5px;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .translate-btn {
-            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
-            letter-spacing: 1px;
-        }
-
-        .translate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(74, 144, 226, 0.5);
-            background: linear-gradient(135deg, #5aa0f2 0%, #458acd 100%);
-        }
-
-        .translate-btn:active {
-            transform: translateY(0);
-        }
-
-        .output-section {
-            margin-top: 30px;
-        }
-
-        .output-textarea {
-            background: var(--bg-output);
-            border: 2px solid var(--border-output);
-            padding: 20px 50px 20px 20px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-        }
-
-        .output-textarea:focus {
-            border-color: rgba(100, 200, 100, 0.4);
-            box-shadow: 0 0 20px rgba(100, 200, 100, 0.15);
-        }
-
-        .special-chars-section {
-            margin-top: 15px;
-            margin-bottom: 25px;
-            padding: 15px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .special-chars-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-            gap: 6px;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-
-        .char-btn {
-            background: var(--bg-char-btn);
-            color: var(--text-primary);
-            border: 1px solid var(--border-char-btn);
-            padding: 8px 4px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .char-btn:hover {
-            background: var(--bg-char-btn-hover);
-            border-color: var(--border-char-btn);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-char-btn);
-        }
-
-        .char-btn:active {
-            transform: translateY(0);
-        }
-
-        .char-cyrillic {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .alphabet-select-section {
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .alphabet-select {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px 15px;
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text-primary);
-            background-color: var(--bg-select);
-            border: 2px solid var(--border-select);
-            border-radius: 12px;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%), linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
-            background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
-            background-size: 5px 5px, 5px 5px;
-            background-repeat: no-repeat;
-            transition: all 0.3s ease;
-        }
-
-        .alphabet-select:focus {
-            outline: none;
-            border-color: rgba(100, 150, 255, 0.5);
-            box-shadow: 0 0 20px rgba(100, 150, 255, 0.2);
-        }
-
-        .alphabet-select option {
-            background: var(--bg-container);
-            color: var(--text-primary);
-            padding: 10px;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--bg-container);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-container);
-            border: 1px solid var(--border-color);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .faq-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .faq-title {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            text-align: center;
-            transition: color 0.3s ease;
-        }
-
-        .faq-item {
-            margin-bottom: 15px;
-            background: var(--bg-textarea);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover {
-            border-color: rgba(100, 150, 255, 0.3);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .faq-item.active {
-            border-color: rgba(100, 150, 255, 0.5);
-        }
-
-        .faq-question {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--text-primary);
-            padding: 15px 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: color 0.3s ease, background 0.3s ease;
-            user-select: none;
-        }
-
-        .faq-question:hover {
-            background: var(--bg-char-btn);
-        }
-
-        .faq-question-icon {
-            font-size: 1.2em;
-            transition: transform 0.3s ease;
-            color: var(--text-secondary);
-            flex-shrink: 0;
-            margin-left: 15px;
-        }
-
-        .faq-item.active .faq-question-icon {
-            transform: rotate(180deg);
-        }
-
-        .faq-answer {
-            font-size: 0.95em;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            padding: 0 20px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease, color 0.3s ease;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 1000px;
-            padding: 0 20px 15px 20px;
-        }
-
-        .faq-answer a {
-            color: #4a90e2;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .faq-answer a:hover {
-            color: #5aa0f2;
-            text-decoration: underline;
-        }
-
-        .faq-sources {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .faq-sources-title {
-            font-size: 1em;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-            transition: color 0.3s ease;
-        }
-
-        .faq-sources-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .faq-sources-list li {
-            margin-bottom: 8px;
-        }
-
-        .faq-sources-list a {
-            color: #4a90e2;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            word-break: break-all;
-        }
-
-        .faq-sources-list a:hover {
-            color: #5aa0f2;
-            text-decoration: underline;
-        }
-
-        .footer-links {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-links a {
-            display: inline-block;
-            width: 32px;
-            height: 32px;
-            margin: 0 10px;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .footer-links img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: filter 0.3s ease, opacity 0.3s ease;
-        }
-
-        html[data-theme="dark"] .footer-links img {
-            filter: invert(1) brightness(1.2);
-            opacity: 0.7;
-        }
-
-        html[data-theme="light"] .footer-links img {
-            filter: brightness(0.6);
-            opacity: 0.6;
-        }
-
-        .footer-links a:hover img {
-            opacity: 1;
-        }
-
-        html[data-theme="dark"] .footer-links a:hover img {
-            filter: invert(1) brightness(1.5);
-        }
-
-        html[data-theme="light"] .footer-links a:hover img {
-            filter: brightness(0.4);
-        }
-        
-
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 25px;
-            }
-
-            
-            .lang-switcher {
-                top: 10px;
-                left: 10px;
-                padding: 4px;
-                gap: 4px;
-            }
-            .lang-btn {
-                font-size: 11px;
-                padding: 4px 8px;
-            }
-            
-
-            .theme-toggle {
-                top: 10px;
-                right: 10px;
-                padding: 8px 15px;
-                font-size: 12px;
-            }
-
-            .logo-header {
-                gap: 15px;
-                margin-bottom: 20px;
-                padding: 15px 0;
-                margin-top: 45px;
-            }
-
-            .logo-text {
-                font-size: 1.5em;
-                min-width: 80px;
-                letter-spacing: 2px;
-            }
-
-            .logo-container {
-                width: 80px;
-                height: 80px;
-            }
-
-            .special-chars-grid {
-                grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
-                gap: 5px;
-            }
-
-            .char-btn {
-                padding: 6px 3px;
-                font-size: 11px;
-            }
-
-            .char-cyrillic {
-                font-size: 16px;
-            }
-
-            .clear-btn, .copy-btn {
-                width: 25px;
-                height: 25px;
-                font-size: 25px;
-                top: 12px;
-                transform: none;
-            }
-
-            .clear-btn:hover, .copy-btn:hover {
-                transform: scale(1.1);
-            }
-
-            .copy-btn img {
-                width: 16px;
-                height: 16px;
-            }
-
-            .faq-section {
-                margin-top: 30px;
-                padding-top: 20px;
-            }
-
-            .faq-title {
-                font-size: 1.3em;
-                margin-bottom: 15px;
-            }
-
-            .faq-item {
-                margin-bottom: 12px;
-            }
-
-            .faq-question {
-                font-size: 1em;
-                padding: 12px 15px;
-            }
-
-            .faq-answer {
-                padding: 0 15px;
-            }
-
-            .faq-item.active .faq-answer {
-                padding: 0 15px 12px 15px;
-            }
-
-            .faq-answer {
-                font-size: 0.9em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4NEH7TP8F"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-G4NEH7TP8F');
+    </script>
 </head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4NEH7TP8F"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-G4NEH7TP8F');
-</script>
 <body>
+
     <div class="lang-switcher">
         <button class="lang-btn" data-lang="ru">Русский</button>
         <button class="lang-btn" data-lang="en">English</button>
@@ -767,71 +32,82 @@
     </button>
 
     <div class="container">
+
         <div class="logo-header">
             <div class="logo-text">Sakha</div>
             <div class="logo-container">
-                <img src="haryskhal.png" alt="Logo" class="logo-image" />
+                <img src="haryskhal.png" alt="SakhaLatin logo" class="logo-image" />
             </div>
             <div class="logo-text">Latin</div>
         </div>
-        <h1 class="main-subtitle" data-i18n="subtitle">Якутская Кириллица → Якутская </h1>
-        
-        <div style="margin-bottom: 25px; line-height: 1.55; color: var(--text-secondary); font-size: 0.95em;">
-        <h2 data-i18n="intro_title" style="font-size: 1.15em; margin-bottom: 10px; color: var(--text-primary); font-weight: 600;">
-            Конвертер якутского языка с кириллицы на латиницу
-        </h2>
 
-        <p data-i18n="intro_text">
-            Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке 
-            с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст, 
-            который вводите вручную или же вставить скопированный текст.
-        </p>
+        <h1 class="main-subtitle" data-i18n="subtitle">Якутская Кириллица → Якутская Латиница</h1>
 
-        <p style="margin-top: 10px;" data-i18n="intro_p3">
-            Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> — 
-            не могут быть отображены в точном соответствии с нормами, поскольку эти символы 
-            не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные 
-            формы, максимально близкие к оригинальным:
-        </p>
+        <div class="intro-block">
+            <h2 data-i18n="intro_title">Конвертер якутского языка с кириллицы на латиницу</h2>
+            <p data-i18n="intro_text">
+                Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке
+                с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст,
+                который вводите вручную или же вставить скопированный текст.
+            </p>
+            <p data-i18n="intro_p3">
+                Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> —
+                не могут быть отображены в точном соответствии с нормами, поскольку эти символы
+                не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные
+                формы, максимально близкие к оригинальным:
+            </p>
+            <ul>
+                <li>ыа → <b>ıь</b></li>
+                <li>иэ → <b>ıe</b></li>
+                <li>уо → <b>uo</b></li>
+                <li>ө → <b>ɔe</b></li>
+            </ul>
+        </div>
 
-        <ul style="margin-top: 10px; padding-left: 20px;">
-            <li>ыа → <b>ıь</b></li>
-            <li>иэ → <b>ıe</b></li>
-            <li>уо → <b>uo</b></li>
-            <li>ө → <b>ɔe</b></li>
-        </ul>
-    </div>
         <div class="input-section">
-            <h2 for="input-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);" data-i18n="input_label">Введите текст на якутском (кириллица):</h2>
+            <label class="field-label" for="input-text" data-i18n="input_label">Введите текст на якутском (кириллица):</label>
             <div class="textarea-wrapper">
-                <textarea id="input-text" placeholder="Например: Киэн тутун, эн саха буоларгынан!" data-i18n="input_placeholder"></textarea>
+                <textarea
+                    id="input-text"
+                    placeholder="Например: Киэн тутун, эн саха буоларгынан!"
+                    data-i18n="input_placeholder"
+                    aria-label="Cyrillic input"
+                ></textarea>
                 <button class="clear-btn" id="clear-btn" aria-label="Clear input" title="Clear" data-i18n="clear_title">×</button>
             </div>
+            <div class="char-count" id="char-count" aria-live="polite">0 симв.</div>
         </div>
 
         <div class="special-chars-section">
-            <div class="special-chars-grid" id="special-chars-grid-uppercase">
-            </div>
-            <div class="special-chars-grid" id="special-chars-grid-lowercase">
-            </div>
+            <div class="special-chars-grid" id="special-chars-grid-uppercase"></div>
+            <div class="special-chars-grid" id="special-chars-grid-lowercase"></div>
         </div>
 
         <div class="alphabet-select-section">
-            <h2 for="alphabet-select" style="margin-bottom: 12px; font-weight: 500; font-size: 0.95em; color: var(--text-label);" data-i18n="select_label">Выберите стандарт транслитерации:</h2>
-            <select id="alphabet-select" class="alphabet-select">
+            <label class="field-label" for="alphabet-select" data-i18n="select_label">Выберите стандарт транслитерации:</label>
+            <select id="alphabet-select" class="alphabet-select" aria-label="Transliteration system">
                 <option value="novgorodov" data-i18n="option_novgorodov">Латиница Семёна Новгородова</option>
                 <option value="vengeritsa" data-i18n="option_vengeritsa">Венгерица</option>
-                <option value="yanalif" data-i18n="option_yanalif">Яналиф</option>
+                <option value="yanalif"    data-i18n="option_yanalif">Яналиф</option>
             </select>
         </div>
+
         <div class="button-container">
             <button class="translate-btn" id="translate-btn" data-i18n="translate_btn">Перевести</button>
         </div>
 
         <div class="output-section">
-            <h2 for="output-text" style="font-size: 0.95em; font-weight: 500; margin-bottom: 10px; color: var(--text-label);" data-i18n="output_label">Результат (латиница):</h2>
+            <label class="field-label" for="output-text" data-i18n="output_label">Результат (латиница):</label>
             <div class="textarea-wrapper">
-                <textarea id="output-text" class="output-textarea" readonly placeholder="Результат появится здесь..." data-i18n="output_placeholder"></textarea>
+                <textarea
+                    id="output-text"
+                    class="output-textarea"
+                    readonly
+                    placeholder="Результат появится здесь..."
+                    data-i18n="output_placeholder"
+                    aria-label="Latin output"
+                    aria-live="polite"
+                ></textarea>
                 <button class="copy-btn" id="copy-btn" aria-label="Copy output" title="Copy" data-i18n="copy_title">
                     <img src="copy.png" alt="Copy" />
                 </button>
@@ -840,37 +116,37 @@
 
         <div class="faq-section">
             <h2 class="faq-title" data-i18n="faq_title">Часто задаваемые вопросы</h2>
-            
+
             <div class="faq-item">
                 <div class="faq-question">
-                    <span data-i18n="faq_q1">Откуда взят способ транслитерации?</span>
-                    <span class="faq-question-icon">▼</span>
+                    <span data-i18n="faq_q1">О цели создания сайта</span>
+                    <span class="faq-question-icon" aria-hidden="true">▼</span>
                 </div>
-                <div class="faq-answer" data-i18n="faq_a1">Транслитерация основана на исторических системах латинизации якутского языка: алфавите С.А. Новгородова (1920-е)، системе Яналиф (1929–1939 годов), алфавите Хитрова и современном стандарте «Венгерица». Эти системы были переосмыслены и адаптированы под современные цифровые и визуальные задачи.</div>
+                <div class="faq-answer" data-i18n="faq_a1">Этот сайт создан не для коммерческого использования, а для всеобщего доступа.</div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question">
-                    <span data-i18n="faq_q2">По каким правилам работает транслитерация?</span>
-                    <span class="faq-question-icon">▼</span>
+                    <span data-i18n="faq_q2">Откуда взят способ транслитерации?</span>
+                    <span class="faq-question-icon" aria-hidden="true">▼</span>
                 </div>
-                <div class="faq-answer" data-i18n="faq_a2">Система основана на соответствии один-к-одному между кириллическими и латинскими символами. Каждый знак преобразуется по заданному набору правил с учётом структуры и особенностей якутского языка. При этом сохраняется читаемость текста, визуальная логика и лингвистическая последовательность.</div>
+                <div class="faq-answer" data-i18n="faq_a2">Транслитерация основана на исторических системах.</div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question">
-                    <span data-i18n="faq_q3">О цели создания сайта</span>
-                    <span class="faq-question-icon">▼</span>
+                    <span data-i18n="faq_q3">По каким правилам работает транслитерация?</span>
+                    <span class="faq-question-icon" aria-hidden="true">▼</span>
                 </div>
-                <div class="faq-answer" data-i18n="faq_a3">Этот сайт создан не для коммерческого использования, а для свободного и открытого доступа. Основная цель проекта — пробудить интерес к истории якутского языка и вдохновить людей на его самостоятельную популяризацию. Особое внимание уделяется молодому поколению саха: проект стремится стать для них источником мотивации к созданию полезных инициатив, а также к сохранению, развитию и современному переосмыслению родного языка и культуры.</div>
+                <div class="faq-answer" data-i18n="faq_a3">Система основана на соответствии один-к-одному.</div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question">
                     <span data-i18n="faq_q4">Как можно поддержать проект?</span>
-                    <span class="faq-question-icon">▼</span>
+                    <span class="faq-question-icon" aria-hidden="true">▼</span>
                 </div>
-                <div class="faq-answer" data-i18n="faq_a4">Поддержать проект можно через репосты в социальных сетях, рассказы о нём друзьям и знакомым, а также упоминания в своих творческих и образовательных инициативах. Самая ценная поддержка — это живой интерес, вовлечённость и распространение идеи среди людей.</div>
+                <div class="faq-answer" data-i18n="faq_a4">Поддержать проект можно через репосты.</div>
             </div>
 
             <div class="faq-sources">
@@ -890,561 +166,19 @@
             <a href="https://www.instagram.com/sakhalatin" target="_blank" rel="noopener noreferrer" title="Contact me on Instagram" data-i18n="contact_title">
                 <img src="instagram.png" alt="Instagram" />
             </a>
-            <a href="https://github.com/a1zun/sakhalatin" target="_blank" rel="noopener noreferrer" title="Github" data-i18n="contact_title">
-                <img src="github.png" alt="Github" />
+            <a href="https://github.com/aisensivtsev/sakhalatin" target="_blank" rel="noopener noreferrer" title="GitHub">
+                <img src="github.png" alt="GitHub" />
             </a>
         </div>
-        </div>
 
-    <div class="toast" id="toast"></div>
+    </div><!-- /.container -->
 
-    <script>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-        const translations = {
-            'ru': {
-                'meta_description': 'SakhaLatin — инструмент для транслитерации саха (якутской) кириллицы в латиницу, основанный на историческом алфавите Новгородова.',
-                'title': 'SakhaLatin — Кириллица → Латиница',
-                'subtitle': 'Якутская Кириллица → Якутская Латиница',
-                'intro_title': 'Конвертер якутского языка с кириллицы на латиницу',
-                'intro_text': 'Онлайн-конвертер позволяет выполнить автоматическую транслитерацию текстов на якутском языке с кириллического алфавита на латинскую графику. Вы можете конвертировать как текст, который вводите вручную или же вставить скопированный текст.',
-                'intro_p3': 'Некоторые дифтонги — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, а также буква <b>ө</b> — не могут быть отображены в точном соответствии с нормами, поскольку эти символы не поддерживаются на iOS и Android. Поэтому в конвертере используются адаптированные формы, максимально близкие к оригинальным:',
-                'input_label': 'Введите текст на якутском (кириллица):',
-                'input_placeholder': 'Например: Киэн тутун, эн саха буоларгынан!',
-                'clear_title': 'Очистить',
-                'special_chars_label': 'Специальные символы (нажмите, чтобы вставить):',
-                'select_label': 'Выберите стандарт транслитерации:',
-                'option_novgorodov': 'Латиница Семёна Новгородова',
-                'option_vengeritsa': 'Венгерица',
-                'option_yanalif': 'Яналиф',
-                'option_khitrov': 'Алфавит Хитрова',
-                'translate_btn': 'Перевести',
-                'output_label': 'Результат (латиница):',
-                'output_placeholder': 'Результат появится здесь...',
-                'copy_title': 'Копировать',
-                'contact_title': 'Свяжитесь со мной в Instagram',
-                'footer_copyright': '© 2026 SakhaLatin. Все права защищены.',
-                'toast_copied': 'Скопировано в буфер обмена!',
-                'toast_nothing': 'Нечего копировать',
-                'faq_title': 'Часто задаваемые вопросы',
-                'faq_q1': 'О цели создания сайта',
-                'faq_a1': 'Этот сайт создан не для коммерческого использования, а для всеобщего доступа. Моя цель — чтобы люди интересовались историей якутского языка и сами популяризировали его. Я хочу, чтобы молодое поколение саха находило вдохновение создавать полезные проекты, сохранять и развивать наш язык и культуру.',
-                'faq_q2': 'Откуда взят способ транслитерации?',
-                'faq_a2': 'Транслитерация основана на исторических системах латинизации якутского языка: алфавите С.А. Новгородова (1920-е)، системе Яналиф (1929–1939 годов), алфавите Хитрова и современном стандарте «Венгерица». Эти системы были переосмыслены и адаптированы под современные цифровые и визуальные задачи.',
-                'faq_q3': 'По каким правилам работает транслитерация?',
-                'faq_a3': 'Система основана на соответствии один-к-одному между кириллическими и латинскими символами. Каждый знак преобразуется по заданному набору правил с учётом структуры и особенностей якутского языка. При этом сохраняется читаемость текста, визуальная логика и лингвистическая последовательность.',
-                'faq_q4': 'Как можно поддержать проект?',
-                'faq_a4': 'Поддержать проект можно через репосты в социальных сетях, рассказы о нём друзьям и знакомым, а также упоминания в своих творческих и образовательных инициативах. Самая ценная поддержка — это живой интерес, вовлечённость и распространение идеи среди людей.',
-                'faq_sources_title': 'Источники:',
-                'faq_source1': 'Якутская письменность — Википедия',
-                'faq_source2': 'Якутская венгерица — Википедия (саха)'
-            },
-            'en': {
-                'meta_description': 'SakhaLatin — A tool to transliterate Sakha (Yakut) Cyrillic to Latin, based on the historical Novgorodov alphabet.',
-                'title': 'SakhaLatin — Cyrillic → Latin',
-                'subtitle': 'Yakut Cyrillic → Yakut Latin',
-                'intro_title': 'Yakut Language Cyrillic to Latin Converter',
-                'intro_text': 'This online converter allows you to automatically transliterate texts in the Yakut language from the Cyrillic alphabet to Latin script. You can convert text that you type manually or paste copied text.',
-                'intro_p3': 'Some diphthongs — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, as well as the letter <b>ө</b> — cannot be displayed in exact accordance with the standards, as these symbols are not supported on iOS and Android. Therefore, the converter uses adapted forms that are as close as possible to the originals:',
-                'input_label': 'Enter text in Yakut (Cyrillic):',
-                'input_placeholder': 'Example: Киэн тутун, эн саха буоларгынан!',
-                'clear_title': 'Clear',
-                'special_chars_label': 'Special Characters (click to insert):',
-                'select_label': 'Choose transliteration standard:',
-                'option_novgorodov': 'Semyon Novgorodov\'s Latin',
-                'option_vengeritsa': 'Vengeritsa',
-                'option_yanalif': 'Yanalif',
-                'option_khitrov': 'Khitrov\'s Alphabet',
-                'translate_btn': 'Translate',
-                'output_label': 'Result (Latin):',
-                'output_placeholder': 'The result will appear here...',
-                'copy_title': 'Copy',
-                'contact_title': 'Contact me on Instagram',
-                'footer_copyright': '© 2026 SakhaLatin. All rights reserved.',
-                'toast_copied': 'Copied to clipboard!',
-                'toast_nothing': 'Nothing to copy',
-                'faq_title': 'Frequently Asked Questions',
-                'faq_q1': 'About the purpose of creating this site',
-                'faq_a1': 'This website is not intended for commercial use, but rather for free and open access. The project\'s primary goal is to spark interest in the history of the Yakut language and inspire people to promote it independently. Particular attention is paid to the younger generation of Sakha people: the project aims to motivate them to create useful initiatives, as well as to preserve, develop, and reimagine their native language and culture.',
-                'faq_q2': 'Where does the transliteration method come from?',
-                'faq_a2': 'The transliteration is based on historical systems of Yakut latinization: the alphabet of S.A. Novgorodov (1920s), the Yanálif system (1929–1939), Khitrov\'s alphabet, and the modern "Vengeritsa" standard. These systems have been reimagined and adapted for modern digital and visual applications.',
-                'faq_q3': 'What rules does the transliteration follow?',
-                'faq_a3': 'The system is based on a one-to-one correspondence between Cyrillic and Latin characters. Each sign is converted according to a given set of rules, taking into account the structure and features of the Yakut language. At the same time, text readability, visual logic, and linguistic consistency are preserved.',
-                'faq_q4': 'How can I support the project?',
-                'faq_a4': 'You can support the project through reposts on social networks, sharing it with friends and acquaintances, as well as mentioning it in your creative and educational initiatives. The most valuable support is genuine interest, engagement, and spreading the idea among people.',
-                'faq_sources_title': 'Sources:',
-                'faq_source1': 'Yakut writing — Wikipedia',
-                'faq_source2': 'Yakut Vengeritsa — Wikipedia (Sakha)'
-            },
-            'sah': {
-                'meta_description': 'SakhaLatin — Саха (якут) кириллицатын латыын алпабыытыгар көһөрөр тэрил, С.А. Новгородов историябыт алпабыытыгар олоҕуран.',
-                'title': 'SakhaLatin — Кириллица → Латыын',
-                'subtitle': 'Саха Кириллицата → Саха Латыына',
-                'intro_title': 'Саха тылын кириллицаттан латыын алпабыытыгар көһөрөөччү',
-                'intro_text': 'Бу онлайн-көһөрөөччү сахалыы тиэкистэри кириллицаттан латыын суругар-бичигэр тута көһөрөргө аналлаах. Бэйэҕит бэчээттиир эбэтэр атын сиртэн киллэрбит тиэкискитин көһөрүөххүтүн сөп.',
-                'intro_p3': 'Сорох дифтоҥнар — <b>ыа</b>, <b>иэ</b>, <b>уο</b>, уонна <b>ө</b> буукуба — iOS уонна Android-ка өйөммөт буоланнарын, табатык көстүбэттэр. Ол иһин манна кинилэргэ чугас, сөптөөх солбуктар туттуллаллар:',
-                'input_label': 'Сахалыы тиэкиһи киллэр (кириллица):',
-                'input_placeholder': 'Холобур: Киэн тутун, эн саха буоларгынан!',
-                'clear_title': 'Ыраастаа',
-                'special_chars_label': 'Анал бэлиэлэр (баттаан киллэр):',
-                'select_label': 'Транслитерация стандартын тал:',
-                'option_novgorodov': 'Сэмэн Новгородов Латыына',
-                'option_vengeritsa': 'Венгерица',
-                'option_yanalif': 'Яналиф',
-                'option_khitrov': 'Хитров Алпабыыта',
-                'translate_btn': 'Көһөр',
-                'output_label': 'Түмүк (латыын):',
-                'output_placeholder': 'Түмүк манна тахсыа...',
-                'copy_title': 'Куопуйалаа',
-                'contact_title': 'Instagram-ҥа сибээстэс',
-                'footer_copyright': '© 2026 SakhaLatin. Барыта көмүскэллээх.',
-                'toast_copied': 'Буферга куопуйданда!',
-                'toast_nothing': 'Куопуйдуур туох да суох',
-                'faq_title': 'Элбэхтик ыйытыллар ыйытыктар',
-                'faq_q1': 'Ситим-сир айыллыбыт сыалын туһунан',
-                'faq_a1': 'Бу ситим-сир коммерческай туһаҕа аналлана илигин, босхо уонна аһаҕас туһаҕа аналлаах. Тэрил сүрүн сыала — саха тылын историятыгар кыһаллыыны үөскэтии уонна дьону бэйэлэрэ тарҕаталларыгар күүһүрдүү. Эдэр көлүөнэ саха дьонугар аналлаах: тэрил кинилэргэ туһалаах инициативалар оҥорорго, ону тэҥэ төрүт тылбытын уонна култуурабытын харыстыырга, сайыннарарга уонна билиҥҥи кэмҥэ саҥанан толкуйдааһыҥҥа күүһүрдүүнү булунарга аналлаах.',
-                'faq_q2': 'Транслитерация ньымата хантан ылыллыбыт?',
-                'faq_a2': 'Транслитерация саха тылын латыыннааһын историябыт тиһиктэригэр олоҕурар: С.А. Новгородов алпабыыта (1920-с сс.), Яналиф тиһигэ (1929–1939 сс.), Хитров алпабыыта уонна билиҥҥи "Венгерица" стандара. Бу тиһиктэр билиҥҥи цифровой уонна визуальнай задачаларга сөптөөхтүк саҥанан толкуйданан уонна адаптацияланан туһаныллаллар.',
-                'faq_q3': 'Транслитерация ханнык дьаһабыллары тутуһар?',
-                'faq_a3': 'Тиһик кириллица уонна латыын бэлиэлэрин биир-бииргэ сөп түбэһиитигэр олоҕурар. Бэлиэ барыта саха тылын структуратын уонна ойуулуурун ааҕан биэриллэр дьаһабылларга сөп түбэһиннэрэн көһөрүллэр. Ону тэҥэ тиэкис ааҕыллар кыаҕа, визуальнай логика уонна лингвистическай последовательноһа харыстаныллар.',
-                'faq_q4': 'Тэрили хайдах көмүскээххин сөп?',
-                'faq_a4': 'Тэрили социальнай ситимнэргэ репост оҥорон, доҕотторугар уонна билэр дьоҥҥо кэпсээн, ону тэҥэ бэйэҕит творческай уонна үөрэх инициативаларыгар ахтынан көмүскээххин сөп. Ордук кэрэхтээх көмө — бу кыратык кыһаллыы, кыттыы уонна санааны дьон ортотугар тарҕатыы.',
-                'faq_sources_title': 'Источниктар:',
-                'faq_source1': 'Саха суруга — Википедия',
-                'faq_source2': 'Саха венгерицата — Википедия (саха)'
-            }
-        };
-
-        let currentLang = 'ru'; 
-
-        function setLanguage(lang) {
-            if (!translations[lang]) {
-                console.error('Language not found:', lang);
-                return;
-            }
-            
-            currentLang = lang; 
-            const langStrings = translations[lang];
-
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (langStrings[key]) {
-                    if (element.hasAttribute('placeholder')) {
-                        element.setAttribute('placeholder', langStrings[key]);
-                    } else if (element.hasAttribute('title')) {
-                        element.setAttribute('title', langStrings[key]);
-                    } else if (element.tagName === 'META' && element.hasAttribute('name')) {
-                         element.setAttribute('content', langStrings[key]);
-                    } else {
-                        element.innerHTML = langStrings[key]; 
-                    }
-                }
-            });
-            
-            document.title = langStrings['title'];
-            document.documentElement.lang = lang;
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('active');
-                }
-            });
-
-            localStorage.setItem('language', lang);
-        }
-        
-
-
-        const alphabetSystems = {
-            'yanalif': {
-                applyLongVowels: false,
-                map: {
-'А': 'A', 'а': 'a', 'Б': 'B', 'б': 'b',
-                    'В': 'V', 'в': 'v', 'Г': 'G', 'г': 'g',
-                    'Д': 'D', 'д': 'd', 'И': 'I', 'и': 'i',
-                    'Й': 'J', 'й': 'j', 'К': 'K', 'к': 'k',
-                    'Л': 'L', 'л': 'l', 'М': 'M', 'м': 'm',
-                    'Н': 'N', 'н': 'n', 'О': 'O', 'о': 'o',
-                    'П': 'P', 'п': 'p', 'Р': 'R', 'р': 'r',
-                    'С': 'S', 'с': 's', 'Т': 'T', 'т': 't',
-                    'У': 'U', 'у': 'u', 'Х': 'Q', 'х': 'q',
-                    'Ч': 'C', 'ч': 'c', 
-                    // ВОЗВРАТ К ОРИГИНАЛЬНОМУ ПРАВИЛУ: Ы -> Ь
-                    'Ы': 'Ь', 'ы': 'ь', 
-                    'Э': 'E', 'э': 'e',
-                    'Ҕ': 'Ƣ', 'ҕ': 'ƣ', 'Ҥ': 'Ꞑ', 'ҥ': 'ꞑ',
-                    'Һ': 'H', 'һ': 'h', 'Ө': 'Ө', 'ө': 'ɵ', 
-                    'Ү': 'Y', 'ү': 'y', 
-                },
-                combinations: [
-                    { cyrillic: 'Аа', latin: 'Aa' }, { cyrillic: 'аа', latin: 'aa' },
-                    { cyrillic: 'Оо', latin: 'Oo' }, { cyrillic: 'оо', latin: 'oo' },
-                    // ВОЗВРАТ К ОРИГИНАЛЬНОМУ ПРАВИЛУ: Ыы -> Ьь
-                    { cyrillic: 'Ыы', latin: 'Ьь' }, { cyrillic: 'ыы', latin: 'ьь' }, 
-                    { cyrillic: 'Уу', latin: 'Uu' }, { cyrillic: 'уу', latin: 'uu' },
-                    { cyrillic: 'Ии', latin: 'Ii' }, { cyrillic: 'ии', latin: 'ii' },
-                    { cyrillic: 'Өө', latin: 'Өө' }, { cyrillic: 'өө', latin: 'ɵɵ' }, 
-                    { cyrillic: 'Үү', latin: 'Yy' }, { cyrillic: 'үү', latin: 'yy' },
-                    { cyrillic: 'Ээ', latin: 'Ee' }, { cyrillic: 'ээ', latin: 'ee' },
-                    { cyrillic: 'Ҥҥ', latin: 'Ꞑꞑ' }, { cyrillic: 'ҥҥ', latin: 'ꞑꞑ' },
-                    { cyrillic: 'Дь', latin: 'Ç' }, { cyrillic: 'дь', latin: 'ç' },
-                    { cyrillic: 'Нь', latin: 'Nj' }, { cyrillic: 'нь', latin: 'nj' },
-                ]
-            },
-            'novgorodov': {
-                applyLongVowels: true,
-                map: {
-                    'А': 'a', 'а': 'a',
-                    'Б': 'b', 'б': 'b',
-                    'В': '—', 'в': '—', 
-                    'Г': 'g', 'г': 'g',
-                    'Ҕ': 'ʃ', 'ҕ': 'ʃ',
-                    'Д': 'd', 'д': 'd',
-                    'И': 'i', 'и': 'i',
-                    'Й': 'j', 'й': 'j',
-                    'Ҋ': 'ɟ', 'ҋ': 'ɟ',
-                    'К': 'k', 'к': 'k',
-                    'Л': 'l', 'л': 'l',
-                    'М': 'm', 'м': 'm',
-                    'Н': 'n', 'н': 'n',
-                    'Ҥ': 'ŋ', 'ҥ': 'ŋ',
-                    'О': 'ɔ', 'о': 'ɔ',
-                    'Ө': 'ɔe', 'ө': 'ɔe',
-                    'П': 'p', 'п': 'p',
-                    'Р': 'r', 'р': 'r',
-                    'С': 's', 'с': 's',
-                    'Һ': 'h', 'һ': 'h',
-                    'Т': 't', 'т': 't',
-                    'У': 'u', 'у': 'u',
-                    'Ү': 'y', 'ү': 'y',
-                    'Х': 'q', 'х': 'q',
-                    'Ч': 'c', 'ч': 'c',
-                    'Ы': 'ɯ', 'ы': 'ɯ',
-                    'Э': 'e', 'э': 'e',
-                },
-                combinations: [
-                    { cyrillic: 'Ыа', latin: 'ıь' },
-                    { cyrillic: 'ыа', latin: 'ıь' },
-                    { cyrillic: 'Иэ', latin: 'ıe' },
-                    { cyrillic: 'иэ', latin: 'ıe' },
-                    { cyrillic: 'Уо', latin: 'uo' },
-                    { cyrillic: 'уо', latin: 'uo' },
-                    { cyrillic: 'Үө', latin: 'w' },
-                    { cyrillic: 'үө', latin: 'w' },
-                    { cyrillic: 'Дь', latin: 'з' },
-                    { cyrillic: 'дь', latin: 'з' },
-                    { cyrillic: 'Ль', latin: 'ʎ' },
-                    { cyrillic: 'ль', latin: 'ʎ' },
-                    { cyrillic: 'Нь', latin: 'ɲ' },
-                    { cyrillic: 'нь', latin: 'ɲ' },
-                ]
-            },
-            'vengeritsa': {
-                applyLongVowels: false,
-                map: {
-                    'А': 'A', 'а': 'a',
-                    'Б': 'B', 'б': 'b',
-                    'В': 'V', 'в': 'v',
-                    'Г': 'g', 'г': 'g',
-                    'Ҕ': 'Gh', 'ҕ': 'gh',
-                    'Д': 'D', 'д': 'd',
-                    'Е': '—', 'е': '—',     // Handled by combinations
-                    'Ё': '—', 'ё': '—',     // Handled by combinations
-                    'Ж': 'Jh', 'ж': 'jh',
-                    'З': 'Z', 'з': 'z',
-                    'И': 'I', 'и': 'i',
-                    'Й': 'Ÿ', 'й': 'ÿ',
-                    'Ҋ': '—', 'ҋ': '—',
-                    'К': 'K', 'к': 'k',
-                    'Л': 'L', 'л': 'l',
-                    'М': 'M', 'м': 'm',
-                    'Н': 'N', 'н': 'n',
-                    'Ҥ': 'Ng', 'ҥ': 'ng',
-                    'О': 'O', 'о': 'o',
-                    'Ө': 'Ö', 'ө': 'ö',
-                    'П': 'P', 'п': 'p',
-                    'Р': 'R', 'р': 'r',
-                    'С': 'S', 'с': 's',
-                    'Һ': 'H', 'һ': 'h',
-                    'Т': 'T', 'т': 't',
-                    'У': 'U', 'у': 'u',
-                    'Ү': 'Ü', 'ү': 'ü',
-                    'Ф': 'F', 'ф': 'f',
-                    'Х': 'Q', 'х': 'q',
-                    'Ц': 'Tz', 'ц': 'tz',
-                    'Ч': 'C', 'ч': 'c',
-                    'Ш': 'Sh', 'ш': 'sh',
-                    'Щ': 'Sc', 'щ': 'sc',
-                    'Ъ': '—', 'ъ': '—',
-                    'Ы': 'y', 'ы': 'y',
-                    'Ь': '—', 'ь': '—',
-                    'Э': 'E', 'э': 'e',
-                    'Ю': '—', 'ю': '—',     
-                    'Я': '—', 'я': '—',     
-                },
-                combinations: [
-
-                    { cyrillic: 'Аа', latin: 'Á' }, { cyrillic: 'аа', latin: 'á' },
-                    { cyrillic: 'Оо', latin: 'Ó' }, { cyrillic: 'оо', latin: 'ó' },
-                    { cyrillic: 'Ыы', latin: 'Ý' }, { cyrillic: 'ыы', latin: 'ý' },
-                    { cyrillic: 'Уу', latin: 'Ú' }, { cyrillic: 'уу', latin: 'ú' },
-                    { cyrillic: 'Ии', latin: 'Í' }, { cyrillic: 'ии', latin: 'í' },
-                    { cyrillic: 'Өө', latin: 'Ő' }, { cyrillic: 'өө', latin: 'ő' },
-                    { cyrillic: 'Үү', latin: 'Ű' }, { cyrillic: 'үү', latin: 'ű' },
-                    { cyrillic: 'Ээ', latin: 'É' }, { cyrillic: 'ээ', latin: 'é' }, 
-
-                    { cyrillic: 'Ыа', latin: 'Ë' }, { cyrillic: 'ыа', latin: 'ë' },
-                    { cyrillic: 'Иэ', latin: 'Ê' }, { cyrillic: 'иэ', latin: 'ê' },
-                    { cyrillic: 'Уо', latin: 'Ô' }, { cyrillic: 'уо', latin: 'ô' },
-                    { cyrillic: 'Үө', latin: 'Œ' }, { cyrillic: 'үө', latin: 'œ' },
- 
-                    { cyrillic: 'Ҥҥ', latin: 'Nng' }, { cyrillic: 'ҥҥ', latin: 'nng' },
-                    { cyrillic: 'Дь', latin: 'J' }, { cyrillic: 'дь', latin: 'j' },
-                    { cyrillic: 'Нь', latin: 'Nh' }, { cyrillic: 'нь', latin: 'nh' },
-
-                    { cyrillic: 'Е', latin: 'Ÿe' }, { cyrillic: 'е', latin: 'ÿe' },
-                    { cyrillic: 'Я', latin: 'Ÿa' }, { cyrillic: 'я', latin: 'ÿa' },
-                    { cyrillic: 'Ё', latin: 'Ÿo' }, { cyrillic: 'ё', latin: 'ÿo' },
-                    { cyrillic: 'Ю', latin: 'Ÿu' }, { cyrillic: 'ю', latin: 'ÿu' }
-                ]
-            },
-        };
-
-        const longVowelMap = {
-            'aa': 'a:',
-            'ii': 'i:',
-            'uu': 'u:',
-            'ɯɯ': 'ɯ:',
-            'ɔɔ': 'ɔ:',
-            'ee': 'e:', 
-            'yy': 'y:',
-            'ɔeɔe': 'ɔe:'
-        };
-
-        function transliterate(text, systemKey) {
-            if (!text) return '';
-
-            const rules = alphabetSystems[systemKey];
-            if (!rules) {
-                console.error('Invalid transliteration system key:', systemKey);
-                return text; 
-            }
-            
-            const transliterationMap = rules.map;
-            const specialCombinations = rules.combinations;
-            
-            let result = text;
-
-            const sortedCombinations = [...specialCombinations].sort((a, b) => b.cyrillic.length - a.cyrillic.length);
-            
-            for (const combo of sortedCombinations) {
-                const escaped = combo.cyrillic.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(escaped, 'g');
-                result = result.replace(regex, combo.latin);
-            }
-
-            let transliterated = '';
-            for (let i = 0; i < result.length; i++) {
-                const char = result[i];
-                
-                if (transliterationMap[char] !== undefined) {
-                    transliterated += transliterationMap[char];
-                } else {
-                    transliterated += char;
-                }
-            }
-
-            if (rules.applyLongVowels) {
-                for (const [pattern, replacement] of Object.entries(longVowelMap)) {
-                    const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const regex = new RegExp(escaped, 'g');
-                    transliterated = transliterated.replace(regex, replacement);
-                }
-            }
-
-            return transliterated;
-        }
-
-        function insertAtCursor(textarea, text) {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const value = textarea.value;
-            textarea.value = value.substring(0, start) + text + value.substring(end);
-            const newCursorPos = start + text.length;
-            textarea.setSelectionRange(newCursorPos, newCursorPos);
-            textarea.focus();
-        }
-        const specialCharacters = [
-            { cyrillic: 'Ҕ', latin: 'ʃ', label: 'Ҕ → ʃ' },
-            { cyrillic: 'ҕ', latin: 'ʃ', label: 'ҕ → ʃ' },
-            { cyrillic: 'Һ', latin: 'h', label: 'Һ → h' },
-            { cyrillic: 'һ', latin: 'h', label: 'һ → h' },
-            { cyrillic: 'Ҥ', latin: 'ŋ', label: 'Ҥ → ŋ' },
-            { cyrillic: 'ҥ', latin: 'ŋ', label: 'ҥ → ŋ' },
-            { cyrillic: 'Ө', latin: 'œ', label: 'Ө → œ' },
-            { cyrillic: 'ө', latin: 'œ', label: 'ө → œ' },
-            { cyrillic: 'Ү', latin: 'y', label: 'Ү → y' },
-            { cyrillic: 'ү', latin: 'y', label: 'ү → y' },
-        ];
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputTextarea = document.getElementById('input-text');
-            const outputTextarea = document.getElementById('output-text');
-            const translateBtn = document.getElementById('translate-btn');
-            const clearBtn = document.getElementById('clear-btn');
-            const copyBtn = document.getElementById('copy-btn');
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            const toast = document.getElementById('toast');
-            const specialCharsGridUppercase = document.getElementById('special-chars-grid-uppercase');
-            const specialCharsGridLowercase = document.getElementById('special-chars-grid-lowercase');
-            const alphabetSelect = document.getElementById('alphabet-select');
-            const langButtons = document.querySelectorAll('.lang-btn'); 
-
-            function initApp() {
-                const currentTheme = localStorage.getItem('theme') || 'dark';
-                document.documentElement.setAttribute('data-theme', currentTheme);
-                updateThemeUI(currentTheme);
-                
-                const savedLang = localStorage.getItem('language') || 'ru'; 
-                setLanguage(savedLang);
-            }
-
-            function updateThemeUI(theme) {
-                if (theme === 'light') {
-                    themeIcon.textContent = '🌙';
-                    themeText.textContent = 'Dark';
-                } else {
-                    themeIcon.textContent = '☀️';
-                    themeText.textContent = 'Light';
-                }
-            }
-
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeUI(newTheme);
-            });
-
-            function showToast(messageKey) {
-                const message = translations[currentLang][messageKey] || messageKey;
-                toast.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
-            }
-
-            clearBtn.addEventListener('click', function() {
-                inputTextarea.value = '';
-                outputTextarea.value = '';
-                inputTextarea.focus();
-            });
-
-            copyBtn.addEventListener('click', function() {
-                const text = outputTextarea.value;
-                if (text) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        showToast('toast_copied'); 
-                    }).catch(() => { 
-                        outputTextarea.select();
-                        document.execCommand('copy');
-                        showToast('toast_copied'); 
-                    });
-                } else {
-                    showToast('toast_nothing');
-                }
-            });
-
-            // Разделяем символы на заглавные и строчные
-            const uppercaseChars = specialCharacters.filter(char => {
-                const upper = char.cyrillic.toUpperCase();
-                const lower = char.cyrillic.toLowerCase();
-                return char.cyrillic === upper && upper !== lower;
-            });
-            const lowercaseChars = specialCharacters.filter(char => {
-                const upper = char.cyrillic.toUpperCase();
-                const lower = char.cyrillic.toLowerCase();
-                return char.cyrillic === lower && upper !== lower;
-            });
-
-            // Создаем кнопки для заглавных символов
-            uppercaseChars.forEach(char => {
-                const button = document.createElement('button');
-                button.className = 'char-btn';
-                button.innerHTML = `
-                    <span class="char-cyrillic">${char.cyrillic}</span>
-                `;
-                button.addEventListener('click', function() {
-                    insertAtCursor(inputTextarea, char.cyrillic);
-                });
-                specialCharsGridUppercase.appendChild(button);
-            });
-
-            // Создаем кнопки для строчных символов
-            lowercaseChars.forEach(char => {
-                const button = document.createElement('button');
-                button.className = 'char-btn';
-                button.innerHTML = `
-                    <span class="char-cyrillic">${char.cyrillic}</span>
-                `;
-                button.addEventListener('click', function() {
-                    insertAtCursor(inputTextarea, char.cyrillic);
-                });
-                specialCharsGridLowercase.appendChild(button);
-            });
-
-            function performTransliteration() {
-                const inputText = inputTextarea.value;
-                const selectedSystem = alphabetSelect.value; 
-                const transliteratedText = transliterate(inputText, selectedSystem);
-                outputTextarea.value = transliteratedText;
-            }
-
-            translateBtn.addEventListener('click', performTransliteration);
-
-            inputTextarea.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    performTransliteration();
-                }
-            });
-
-            langButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const lang = button.getAttribute('data-lang');
-                    setLanguage(lang);
-                });
-            });
-
-            // FAQ accordion functionality
-            const faqItems = document.querySelectorAll('.faq-item');
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
-                question.addEventListener('click', () => {
-                    const isActive = item.classList.contains('active');
-                    
-                    // Close all FAQ items
-                    faqItems.forEach(faqItem => {
-                        faqItem.classList.remove('active');
-                    });
-                    
-                    // Open clicked item if it wasn't active
-                    if (!isActive) {
-                        item.classList.add('active');
-                    }
-                });
-            });
-
-            initApp();
-        });
-    </script>
-    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #777; font-size: 14px;">
+    <footer style="text-align:center; margin-top:40px; padding:20px; color:#777; font-size:14px;">
         <p data-i18n="footer_copyright">© 2026 SakhaLatin. All rights reserved.</p>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
