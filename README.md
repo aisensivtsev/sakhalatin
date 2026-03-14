@@ -21,13 +21,19 @@ An online converter that transliterates **Yakut (Sakha)** language texts from th
 - 🌙 Light / dark mode
 - 📱 Mobile-friendly
 
-### 📸 Screenshots
+**Input (Cyrillic):**
+```
+Дьокуускайга үөрэхтээх саха уола күндү үтүө кыыһынан кэпсэтэн,
+ыалҕа барарга бэлэмнэнэн, үөһээ уорҕа суох олох туһунан
+иэстээх санааларын үллэстэ.
+```
 
-| Main interface | Conversion result |
-|---|---|
-| ![Main interface](screenshots/main.png) | ![Result](screenshots/result.png) |
-
-> Add your own screenshots by creating a `screenshots/` folder in the repo.
+**Output (Latin — Novgorodov):**
+```
+зɔku:skajga wreqte:q saqa uola kyndy ytw kɯ:hɯnan kepseten,
+ıьlʃa bararga belemnenen, whe: uorʃa suoq ɔlɔq tuhunan
+ıeste:q sana:larɯn ylleste.
+```
 
 ### 🏛️ Historical Background
 
@@ -91,13 +97,21 @@ Feel free to open an **Issue** to report a bug or suggest improvements, or submi
 - 🌙 Светлая / тёмная тема
 - 📱 Адаптирован для мобильных устройств
 
-### 📸 Скриншоты
+### 🔤 Пример конвертации
 
-| Главный экран | Результат конвертации |
-|---|---|
-| ![Главный экран](screenshots/main.png) | ![Результат](screenshots/result.png) |
+**Ввод (кириллица):**
+```
+Дьокуускайга үөрэхтээх саха уола күндү үтүө кыыһынан кэпсэтэн,
+ыалҕа барарга бэлэмнэнэн, үөһээ уорҕа суох олох туһунан
+иэстээх санааларын үллэстэ.
+```
 
-> Добавьте собственные скриншоты, создав папку `screenshots/` в репозитории.
+**Результат (латиница — Новгородов):**
+```
+зɔku:skajga wreqte:q saqa uola kyndy ytw kɯ:hɯnan kepseten,
+ıьlʃa bararga belemnenen, whe: uorʃa suoq ɔlɔq tuhunan
+ıeste:q sana:larɯn ylleste.
+```
 
 ### 🏛️ Историческая справка
 
